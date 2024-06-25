@@ -1,7 +1,7 @@
 package ivolapuma.miniautorizador.controller;
 
-import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
-import ivolapuma.miniautorizador.dto.CreateCartaoResponseDTO;
+import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
+import ivolapuma.miniautorizador.dto.CriaCartaoResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,12 +12,12 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/cartoes")
-public class CartoesController {
+public class CartaoController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CartoesController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CartaoController.class);
 
     @PostMapping
-    public ResponseEntity<CreateCartaoResponseDTO> create(@RequestBody CreateCartaoRequestDTO requestDto) {
+    public ResponseEntity<CriaCartaoResponseDTO> create(@RequestBody CriaCartaoRequestDTO requestDto) {
         LOGGER.info("Chamado serviço de criação de cartão...");
         // TODO: implementacao da criacao do cartao
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
