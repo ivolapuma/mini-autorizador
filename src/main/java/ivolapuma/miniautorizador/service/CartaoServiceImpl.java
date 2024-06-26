@@ -33,4 +33,15 @@ public class CartaoServiceImpl implements CartaoService {
         CartaoEntity cartao = repository.findById(numeroCartao).get();
         return cartao.getSaldo();
     }
+
+    @Override
+    public CartaoEntity buscarCartao(Long numeroCartao) {
+        return repository.findById(numeroCartao).get();
+    }
+
+    @Override
+    public void atualizarSaldo(CartaoEntity cartao, BigDecimal valor) {
+        BigDecimal novoSaldo = cartao.getSaldo().subtract(valor);
+        cartao.setSaldo(novoSaldo);
+    }
 }

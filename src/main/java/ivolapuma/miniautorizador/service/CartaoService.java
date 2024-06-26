@@ -19,4 +19,8 @@ public interface CartaoService {
     CartaoEntity criarCartao(CartaoEntity cartao);
 
     BigDecimal consultarSaldo(Long numeroCartao);
+
+    CartaoEntity buscarCartao(Long numeroCartao);
+
+    void atualizarSaldo(CartaoEntity cartao, BigDecimal valor);
 }
