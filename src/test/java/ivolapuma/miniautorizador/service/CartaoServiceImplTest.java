@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class CartaoServiceImplTest {
 
     @Test
-    public void criarCartao_quandoDtoValido_deveCriarCartaoERetornarDto() {
+    public void criarCartao_comDtoValido_deveCriarCartaoERetornarDto() {
         CartaoService service = new CartaoServiceImpl();
         CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
         request.setNumeroCartao("1234567890123456");
