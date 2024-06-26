@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 public class CartaoServiceImpl implements CartaoService {
@@ -18,19 +19,18 @@ public class CartaoServiceImpl implements CartaoService {
     private CartaoRepository repository;
 
     @Override
-    public CriaCartaoResponseDTO criarCartao(CriaCartaoRequestDTO request) {
+    public CartaoEntity criarCartao(CartaoEntity cartao) {
         // TODO: validar request
         // TODO: verificar se cartao já existe no repositorio
         // TODO: gravar cartao no repositorio
-        CartaoEntity cartao = new CartaoEntity();
-        cartao.setNumeroCartao(Long.valueOf(request.getNumeroCartao()));
-        cartao.setSenha(Integer.valueOf(request.getSenha()));
         cartao.setSaldo(SALDO_DEFAULT);
         CartaoEntity saved = repository.save(cartao);
-        CriaCartaoResponseDTO response = new CriaCartaoResponseDTO();
-        response.setNumeroCartao(String.valueOf(saved.getNumeroCartao()));
-        response.setSenha(String.valueOf(saved.getNumeroCartao()));
-        return response;
+        return saved;
     }
 
+    @Override
+    public BigDecimal consultarSaldo(Long numeroCartao) {
+        CartaoEntity cartao = repository.findById(numeroCartao).get();
+        return cartao.getSaldo();
+    }
 }

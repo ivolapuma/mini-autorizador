@@ -1,8 +1,8 @@
 version: "3.7"
-#version: "2.20.3"
 
 services:
 
+# Desabilitando configuracao do MongoDB para este projeto...
 #  mongo:
 #    image: mongo:4.2
 #    hostname: mongo

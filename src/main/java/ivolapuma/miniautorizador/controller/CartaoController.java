@@ -2,6 +2,7 @@ package ivolapuma.miniautorizador.controller;
 
 import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
 import ivolapuma.miniautorizador.dto.CriaCartaoResponseDTO;
+import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.service.CartaoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +25,25 @@ public class CartaoController {
     @PostMapping
     public ResponseEntity<CriaCartaoResponseDTO> create(@RequestBody CriaCartaoRequestDTO requestDto) {
         LOGGER.info("Chamado serviço de criação de cartão...");
-        CriaCartaoResponseDTO responseDto = service.criarCartao(requestDto);
+
+        CartaoEntity cartao = new CartaoEntity();
+        cartao.setNumeroCartao(Long.valueOf(requestDto.getNumeroCartao()));
+        cartao.setSenha(Integer.valueOf(requestDto.getSenha()));
+
+        CartaoEntity cartaoCriado = service.criarCartao(cartao);
+
+        CriaCartaoResponseDTO responseDto = new CriaCartaoResponseDTO();
+        responseDto.setNumeroCartao(String.valueOf(cartaoCriado.getNumeroCartao()));
+        responseDto.setSenha(String.valueOf(cartaoCriado.getNumeroCartao()));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/{numeroCartao}")
     public ResponseEntity<BigDecimal> getSaldoByNumeroCartao(@PathVariable String numeroCartao) {
         LOGGER.info("Chamado serviço de consulta de saldo de cartão...");
-        // TODO: implementacao da busca do saldo do cartao
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(null);
+        BigDecimal saldo = service.consultarSaldo(Long.valueOf(numeroCartao));
+        return ResponseEntity.status(HttpStatus.OK).body(saldo);
     }
 
 }
