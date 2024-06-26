@@ -2,6 +2,10 @@ server:
   port: 8080
 
 spring:
+  security:
+    user:
+      name: username
+      password: password
   datasource:
     url: jdbc:mysql://localhost:3306/miniautorizador
     driver-class-name: com.mysql.cj.jdbc.Driver

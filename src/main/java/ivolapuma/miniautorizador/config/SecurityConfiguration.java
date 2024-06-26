@@ -15,13 +15,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-//                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/cartoes/**").permitAll())
-                .authorizeHttpRequests(
-                        authorize -> authorize
-                                        .requestMatchers("/cartoes/**").permitAll()
-                                        .anyRequest().authenticated()
-                )
+                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
