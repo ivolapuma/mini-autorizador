@@ -1,17 +1,19 @@
 package ivolapuma.miniautorizador.service;
 
-import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
-import ivolapuma.miniautorizador.dto.CriaCartaoResponseDTO;
+import ivolapuma.miniautorizador.controller.CartaoController;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.repository.CartaoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Service
 public class CartaoServiceImpl implements CartaoService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CartaoServiceImpl.class);
 
     private static final BigDecimal SALDO_DEFAULT = BigDecimal.valueOf(500.0);
 
@@ -41,7 +43,9 @@ public class CartaoServiceImpl implements CartaoService {
 
     @Override
     public void atualizarSaldo(CartaoEntity cartao, BigDecimal valor) {
+        LOGGER.info("Atualizando saldo do cartao --> numeroCartao: {} | saldo: {} | valor a debitar: {}", cartao.getNumeroCartao(), cartao.getSaldo(), valor);
         BigDecimal novoSaldo = cartao.getSaldo().subtract(valor);
         cartao.setSaldo(novoSaldo);
+        repository.save(cartao);
     }
 }
