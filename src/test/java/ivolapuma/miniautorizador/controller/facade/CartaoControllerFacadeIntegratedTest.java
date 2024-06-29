@@ -25,7 +25,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void post_comCartaoNovo_deveRetornarStatusCreatedECartaoNoBody() throws Throwable {
+    public void post_withCartao_shouldReturnStatusCreatedAndSavedCartaoInBody() throws Throwable {
         CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
         request.setNumeroCartao("1234123412341234");
         request.setSenha("1234");
@@ -41,7 +41,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void post_comCartaoJaExistente_deveRetornarStatusUnprocessableEntityECartaoNoBody() throws Throwable {
+    public void post_withExistentCartao_shouldReturnStatusUnprocessableEntityAndCartaoInBody() throws Throwable {
         CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
         request.setNumeroCartao("1111222233334444");
         request.setSenha("1234");
@@ -57,7 +57,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void getSaldoByNumeroCartao_comCartaoRecemCriado_deveRetornarStatusOKESaldoDefault() throws Throwable {
+    public void getSaldoByNumeroCartao_withNewlyCreatedCartao_shouldReturnStatusOKAndSaldoDefault() throws Throwable {
         CriaCartaoRequestDTO criaCartaoRequest = new CriaCartaoRequestDTO();
         criaCartaoRequest.setNumeroCartao("1234123412341234");
         criaCartaoRequest.setSenha("1234");
@@ -71,7 +71,18 @@ public class CartaoControllerFacadeIntegratedTest {
         BigDecimal body = response.getBody();
         Assertions.assertNotNull(body, "response body nao pode ser nulo");
         Assertions.assertEquals(saldoExpected.doubleValue(), body.doubleValue(), "saldo deve ser igual");
-        Assertions.assertEquals(saldoExpected, body, "saldo deve ser igual");
+        Assertions.assertTrue(saldoExpected.compareTo(body) == 0, "saldo deve ser igual");
+    }
+
+    @Test
+    @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void getSaldoByNumeroCartao_withInexistentCartao_shouldReturnStatusNotFoundAndBodyNull() throws Throwable {
+        String numeroCartao = "1234123412341234";
+        ResponseEntity<BigDecimal> response = facade.getSaldoByNumeroCartao(numeroCartao);
+        Assertions.assertNotNull(response, "response body nao pode ser nulo");
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode().value(), "statusCode deve ser igual");
+        Assertions.assertNull(response.getBody(), "response body deve ser nulo");
     }
 
 }

@@ -1,4 +1,4 @@
-package ivolapuma.miniautorizador.exception.handler;
+package ivolapuma.miniautorizador.controller.advice;
 
 import ivolapuma.miniautorizador.dto.ErrorResponseDTO;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
-public class ExceptionControllerAdvice {
+public class ExceptionHandlerControllerAdvice {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDTO> handle(IllegalArgumentException e, WebRequest request) {
