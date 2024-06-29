@@ -1,6 +1,6 @@
 package ivolapuma.miniautorizador.controller.facade;
 
-import ivolapuma.miniautorizador.dto.RealizaTransacaoRequestDTO;
+import ivolapuma.miniautorizador.dto.ExecuteTransacaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.service.CartaoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class TransacaoControllerFacadeImpl implements TransacaoControllerFacade 
     private CartaoService cartaoService;
 
     @Override
-    public ResponseEntity<String> post(RealizaTransacaoRequestDTO request) {
+    public ResponseEntity<String> post(ExecuteTransacaoRequestDTO request) {
         // TODO: verificar se cartao existe
         // TODO: validar senha do cartao
         // TODO: validar saldo do cartao

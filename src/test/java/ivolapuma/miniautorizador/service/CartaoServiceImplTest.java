@@ -1,6 +1,6 @@
 package ivolapuma.miniautorizador.service;
 
-import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.exception.NotFoundEntityException;
 import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
@@ -114,7 +114,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void validate_withValidRequest_shouldRunOk() {
-        CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
+        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234567890123456");
         request.setSenha("1234");
         Assertions.assertDoesNotThrow(
@@ -124,7 +124,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void validate_withNull_shouldThrowException() {
-        CriaCartaoRequestDTO request = null;
+        CreateCartaoRequestDTO request = null;
         IllegalArgumentException e = Assertions.assertThrows(
                 IllegalArgumentException.class,
                 () -> service.validate(request)
@@ -134,7 +134,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void validate_withNumeroCartaoEmpty_shouldThrowException() {
-        CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
+        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("");
         request.setSenha("1234");
         IllegalArgumentException e = Assertions.assertThrows(
@@ -146,7 +146,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void validate_withSenhaEmpty_shouldThrowException() {
-        CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
+        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234567890123456");
         request.setSenha("");
         IllegalArgumentException e = Assertions.assertThrows(
@@ -158,7 +158,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void validate_withNumeroCartaoInvalid_shouldThrowException() {
-        CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
+        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("x234567890123456");
         request.setSenha("1234");
         IllegalArgumentException e = Assertions.assertThrows(
@@ -170,7 +170,7 @@ public class CartaoServiceImplTest {
 
     @Test
     public void validate_withSenhaInvalid_shouldThrowException() {
-        CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
+        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234567890123456");
         request.setSenha("x234");
         IllegalArgumentException e = Assertions.assertThrows(

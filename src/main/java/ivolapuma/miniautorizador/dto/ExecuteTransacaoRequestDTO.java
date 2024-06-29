@@ -4,7 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class RealizaTransacaoRequestDTO implements Serializable {
+public class ExecuteTransacaoRequestDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 8725115162929629804L;
@@ -13,7 +13,7 @@ public class RealizaTransacaoRequestDTO implements Serializable {
     private String senhaCartao;
     private BigDecimal valor;
 
-    public RealizaTransacaoRequestDTO() {
+    public ExecuteTransacaoRequestDTO() {
     }
 
     public String getNumeroCartao() {

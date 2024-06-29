@@ -1,7 +1,7 @@
 package ivolapuma.miniautorizador.controller.facade;
 
-import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
-import ivolapuma.miniautorizador.dto.CriaCartaoResponseDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoResponseDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.exception.NotFoundEntityException;
 import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
@@ -20,7 +20,7 @@ public class CartaoControllerFacadeImpl implements CartaoControllerFacade {
     private CartaoService service;
 
     @Override
-    public ResponseEntity<CriaCartaoResponseDTO> post(CriaCartaoRequestDTO request) throws Throwable {
+    public ResponseEntity<CreateCartaoResponseDTO> post(CreateCartaoRequestDTO request) throws Throwable {
         service.validate(request);
         CartaoEntity cartao = buildCartao(request);
         try {
@@ -31,14 +31,14 @@ public class CartaoControllerFacadeImpl implements CartaoControllerFacade {
         }
     }
 
-    private static CriaCartaoResponseDTO buildResponse(CartaoEntity created) {
-        CriaCartaoResponseDTO response = new CriaCartaoResponseDTO();
+    private static CreateCartaoResponseDTO buildResponse(CartaoEntity created) {
+        CreateCartaoResponseDTO response = new CreateCartaoResponseDTO();
         response.setNumeroCartao(String.valueOf(created.getNumeroCartao()));
         response.setSenha(String.valueOf(created.getSenha()));
         return response;
     }
 
-    private static CartaoEntity buildCartao(CriaCartaoRequestDTO request) {
+    private static CartaoEntity buildCartao(CreateCartaoRequestDTO request) {
         CartaoEntity cartao = new CartaoEntity();
         cartao.setNumeroCartao(Long.valueOf(request.getNumeroCartao()));
         cartao.setSenha(Integer.valueOf(request.getSenha()));

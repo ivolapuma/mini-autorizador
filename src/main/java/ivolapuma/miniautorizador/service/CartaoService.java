@@ -1,6 +1,6 @@
 package ivolapuma.miniautorizador.service;
 
-import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 
 import java.math.BigDecimal;
@@ -34,7 +34,7 @@ public interface CartaoService {
      * Serviço específico para validar os dados informados na requisição para criação de um cartão.
      * @param request
      */
-    void validate(CriaCartaoRequestDTO request) throws Throwable;
+    void validate(CreateCartaoRequestDTO request) throws Throwable;
 
     /**
      * Serviço específico para validar um número de cartão.

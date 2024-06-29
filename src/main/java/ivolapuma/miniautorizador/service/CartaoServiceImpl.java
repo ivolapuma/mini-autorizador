@@ -1,6 +1,6 @@
 package ivolapuma.miniautorizador.service;
 
-import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.exception.NotFoundEntityException;
 import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
@@ -72,7 +72,7 @@ public class CartaoServiceImpl implements CartaoService {
     }
 
     @Override
-    public void validate(CriaCartaoRequestDTO request) throws Throwable {
+    public void validate(CreateCartaoRequestDTO request) throws Throwable {
         OBJECT_NOT_NULL_VALIDATOR.value(request)
                 .exception(IllegalArgumentException.class)
                 .message("Dados da requisição inválidos")

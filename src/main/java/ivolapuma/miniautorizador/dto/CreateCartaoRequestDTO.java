@@ -3,15 +3,15 @@ package ivolapuma.miniautorizador.dto;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class CriaCartaoResponseDTO implements Serializable {
+public class CreateCartaoRequestDTO implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 5387055976579406223L;
+    private static final long serialVersionUID = 3204527345740077362L;
 
     private String numeroCartao;
     private String senha;
 
-    public CriaCartaoResponseDTO() {
+    public CreateCartaoRequestDTO() {
     }
 
     public String getNumeroCartao() {
@@ -30,4 +30,3 @@ public class CriaCartaoResponseDTO implements Serializable {
         this.senha = senha;
     }
 }
-

@@ -1,8 +1,8 @@
 package ivolapuma.miniautorizador.controller;
 
 import ivolapuma.miniautorizador.controller.facade.CartaoControllerFacade;
-import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
-import ivolapuma.miniautorizador.dto.CriaCartaoResponseDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoResponseDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class CartaoController {
     private CartaoControllerFacade facade;
 
     @PostMapping
-    public ResponseEntity<CriaCartaoResponseDTO> post(@RequestBody CriaCartaoRequestDTO request) throws Throwable {
+    public ResponseEntity<CreateCartaoResponseDTO> post(@RequestBody CreateCartaoRequestDTO request) throws Throwable {
         LOGGER.info("Chamado serviço de criação de cartão");
         return facade.post(request);
     }

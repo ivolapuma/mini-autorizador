@@ -1,7 +1,7 @@
 package ivolapuma.miniautorizador.controller.facade;
 
-import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
-import ivolapuma.miniautorizador.dto.CriaCartaoResponseDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
+import ivolapuma.miniautorizador.dto.CreateCartaoResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,13 @@ public class CartaoControllerFacadeIntegratedTest {
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void post_withCartao_shouldReturnStatusCreatedAndSavedCartaoInBody() throws Throwable {
-        CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
+        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234123412341234");
         request.setSenha("1234");
-        ResponseEntity<CriaCartaoResponseDTO> response = facade.post(request);
+        ResponseEntity<CreateCartaoResponseDTO> response = facade.post(request);
         Assertions.assertNotNull(response, "response nao pode ser nulo");
         Assertions.assertEquals(HttpStatus.CREATED.value(), response.getStatusCode().value(), "statusCode deve ser igual");
-        CriaCartaoResponseDTO body = response.getBody();
+        CreateCartaoResponseDTO body = response.getBody();
         Assertions.assertNotNull(body, "response body nao pode ser nulo");
         Assertions.assertEquals(request.getNumeroCartao(), body.getNumeroCartao(), "numeroCartao deve ser igual");
         Assertions.assertEquals(request.getSenha(), body.getSenha(), "senha deve ser igual");
@@ -42,13 +42,13 @@ public class CartaoControllerFacadeIntegratedTest {
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void post_withExistentCartao_shouldReturnStatusUnprocessableEntityAndCartaoInBody() throws Throwable {
-        CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
+        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1111222233334444");
         request.setSenha("1234");
-        ResponseEntity<CriaCartaoResponseDTO> response = facade.post(request);
+        ResponseEntity<CreateCartaoResponseDTO> response = facade.post(request);
         Assertions.assertNotNull(response, "response nao pode ser nulo");
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatusCode().value(), "statusCode deve ser igual");
-        CriaCartaoResponseDTO body = response.getBody();
+        CreateCartaoResponseDTO body = response.getBody();
         Assertions.assertNotNull(body, "response body nao pode ser nulo");
         Assertions.assertEquals(request.getNumeroCartao(), body.getNumeroCartao(), "numeroCartao deve ser igual");
         Assertions.assertEquals(request.getSenha(), body.getSenha(), "senha deve ser igual");
@@ -58,10 +58,10 @@ public class CartaoControllerFacadeIntegratedTest {
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getSaldoByNumeroCartao_withNewlyCreatedCartao_shouldReturnStatusOKAndSaldoDefault() throws Throwable {
-        CriaCartaoRequestDTO criaCartaoRequest = new CriaCartaoRequestDTO();
+        CreateCartaoRequestDTO criaCartaoRequest = new CreateCartaoRequestDTO();
         criaCartaoRequest.setNumeroCartao("1234123412341234");
         criaCartaoRequest.setSenha("1234");
-        ResponseEntity<CriaCartaoResponseDTO> criaCartaoResponse = facade.post(criaCartaoRequest);
+        ResponseEntity<CreateCartaoResponseDTO> criaCartaoResponse = facade.post(criaCartaoRequest);
         Assertions.assertEquals(HttpStatus.CREATED.value(), criaCartaoResponse.getStatusCode().value(), "statusCode deve ser igual");
         String numeroCartao = criaCartaoResponse.getBody().getNumeroCartao();
         BigDecimal saldoExpected = BigDecimal.valueOf(500.0);

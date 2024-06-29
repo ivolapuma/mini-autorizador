@@ -1,7 +1,7 @@
 package ivolapuma.miniautorizador.controller;
 
 import ivolapuma.miniautorizador.controller.facade.TransacaoControllerFacade;
-import ivolapuma.miniautorizador.dto.RealizaTransacaoRequestDTO;
+import ivolapuma.miniautorizador.dto.ExecuteTransacaoRequestDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class TransacaoController {
     private TransacaoControllerFacade facade;
 
     @PostMapping
-    public ResponseEntity<String> post(@RequestBody RealizaTransacaoRequestDTO request) {
+    public ResponseEntity<String> post(@RequestBody ExecuteTransacaoRequestDTO request) {
         LOGGER.info("Chamado serviço de realização de transação...");
         return facade.post(request);
     }
