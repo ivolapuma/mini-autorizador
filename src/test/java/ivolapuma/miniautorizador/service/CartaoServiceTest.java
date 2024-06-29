@@ -5,6 +5,7 @@ import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.exception.NotFoundEntityException;
 import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
 import ivolapuma.miniautorizador.repository.CartaoRepository;
+import ivolapuma.miniautorizador.service.impl.CartaoServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CartaoServiceImplTest {
+public class CartaoServiceTest {
 
     @InjectMocks
     private CartaoServiceImpl service;

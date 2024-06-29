@@ -1,5 +1,6 @@
-package ivolapuma.miniautorizador.controller.facade;
+package ivolapuma.miniautorizador.controller.facade.impl;
 
+import ivolapuma.miniautorizador.controller.facade.CartaoControllerFacade;
 import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.dto.CreateCartaoResponseDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;

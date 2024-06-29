@@ -1,5 +1,6 @@
 package ivolapuma.miniautorizador.controller.facade;
 
+import ivolapuma.miniautorizador.controller.facade.impl.CartaoControllerFacadeImpl;
 import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.dto.CreateCartaoResponseDTO;
 import org.junit.jupiter.api.Assertions;

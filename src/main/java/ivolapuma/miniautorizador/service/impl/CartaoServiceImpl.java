@@ -1,10 +1,11 @@
-package ivolapuma.miniautorizador.service;
+package ivolapuma.miniautorizador.service.impl;
 
 import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.exception.NotFoundEntityException;
 import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
 import ivolapuma.miniautorizador.repository.CartaoRepository;
+import ivolapuma.miniautorizador.service.CartaoService;
 import ivolapuma.miniautorizador.validator.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
