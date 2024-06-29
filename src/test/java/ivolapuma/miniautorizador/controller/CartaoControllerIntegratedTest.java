@@ -3,17 +3,13 @@ package ivolapuma.miniautorizador.controller;
 import ivolapuma.miniautorizador.util.BasicAuthUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -25,8 +21,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class CartaoControllerIntegratedTest {
 
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
+    @Value("${spring.security.user.name}")
+    private static String username = "username";
+    @Value("${spring.security.user.password}")
+    private static String password = "password";
 
     @Autowired
     private MockMvc mvc;
@@ -36,7 +34,7 @@ public class CartaoControllerIntegratedTest {
         String body = "{ \"numeroCartao\": \"1234567890123456\", \"senha\": \"1234\" }";
         String expectedBody = "{ \"senha\": \"1234\", \"numeroCartao\": \"1234567890123456\" }";
         mvc.perform(post("/cartoes")
-                    .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, PASSWORD))
+                    .header("Authorization", BasicAuthUtil.getAuthorizarion(username, password))
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(body))
                 .andExpect(status().isCreated())
@@ -50,7 +48,7 @@ public class CartaoControllerIntegratedTest {
         String body = "{ \"numeroCartao\": \"1111222233334444\", \"senha\": \"1234\" }";
         String expectedBody = "{ \"senha\": \"1234\", \"numeroCartao\": \"1111222233334444\" }";
         mvc.perform(post("/cartoes")
-                        .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, PASSWORD))
+                        .header("Authorization", BasicAuthUtil.getAuthorizarion(username, password))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isUnprocessableEntity())
@@ -61,7 +59,7 @@ public class CartaoControllerIntegratedTest {
     public void cartoesPost_withInvalidCredentials_shouldReturnStatusNotAuthorized() throws Exception {
         String body = "{ \"numeroCartao\": \"1234567890123456\", \"senha\": \"1234\" }";
         mvc.perform(post("/cartoes")
-                        .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, "pass"))
+                        .header("Authorization", BasicAuthUtil.getAuthorizarion(username, "pass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isUnauthorized());
@@ -74,7 +72,7 @@ public class CartaoControllerIntegratedTest {
         String numeroCartao = "1111222233334444";
         String saldoExpected = "500.00";
         mvc.perform(get("/cartoes/{numeroCartao}".replace("{numeroCartao}", numeroCartao))
-                .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, PASSWORD)))
+                .header("Authorization", BasicAuthUtil.getAuthorizarion(username, password)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(saldoExpected));
     }
@@ -83,7 +81,7 @@ public class CartaoControllerIntegratedTest {
     public void cartoesGetByNumeroCartao_withNumeroCartaoInexistent_shouldReturnStatusNotFoundAndBodyEmpty() throws Exception {
         String numeroCartao = "1111222233334444";
         mvc.perform(get("/cartoes/{numeroCartao}".replace("{numeroCartao}", numeroCartao))
-                        .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, PASSWORD)))
+                        .header("Authorization", BasicAuthUtil.getAuthorizarion(username, password)))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string(""));
     }
@@ -92,7 +90,7 @@ public class CartaoControllerIntegratedTest {
     public void cartoesGetByNumeroCartao_withInvalidCredentials_shouldReturnStatusNotAuthorized() throws Exception {
         String numeroCartao = "1111222233334444";
         mvc.perform(get("/cartoes/{numeroCartao}".replace("{numeroCartao}", numeroCartao))
-                        .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, "pass")))
+                        .header("Authorization", BasicAuthUtil.getAuthorizarion(username, "pass")))
                 .andExpect(status().isUnauthorized());
     }
 
