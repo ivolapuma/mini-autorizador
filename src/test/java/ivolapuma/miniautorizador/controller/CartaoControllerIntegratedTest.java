@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,6 +64,35 @@ public class CartaoControllerIntegratedTest {
                         .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, "pass"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void cartoesGetByNumeroCartao_withNumeroCartao_shouldReturnStatusOKAndSaldo() throws Exception {
+        String numeroCartao = "1111222233334444";
+        String saldoExpected = "500.00";
+        mvc.perform(get("/cartoes/{numeroCartao}".replace("{numeroCartao}", numeroCartao))
+                .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, PASSWORD)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(saldoExpected));
+    }
+
+    @Test
+    public void cartoesGetByNumeroCartao_withNumeroCartaoInexistent_shouldReturnStatusNotFoundAndBodyEmpty() throws Exception {
+        String numeroCartao = "1111222233334444";
+        mvc.perform(get("/cartoes/{numeroCartao}".replace("{numeroCartao}", numeroCartao))
+                        .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, PASSWORD)))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(""));
+    }
+
+    @Test
+    public void cartoesGetByNumeroCartao_withInvalidCredentials_shouldReturnStatusNotAuthorized() throws Exception {
+        String numeroCartao = "1111222233334444";
+        mvc.perform(get("/cartoes/{numeroCartao}".replace("{numeroCartao}", numeroCartao))
+                        .header("Authorization", BasicAuthUtil.getAuthorizarion(USERNAME, "pass")))
                 .andExpect(status().isUnauthorized());
     }
 
