@@ -1,5 +1,6 @@
 package ivolapuma.miniautorizador.service;
 
+import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 
 import java.math.BigDecimal;
@@ -16,11 +17,28 @@ public interface CartaoService {
      * @param cartao
      * @return
      */
-    CartaoEntity criarCartao(CartaoEntity cartao);
+    CartaoEntity create(CartaoEntity cartao) throws Throwable;
 
-    BigDecimal consultarSaldo(Long numeroCartao);
+    /**
+     * Serviço específco para consultar o saldo de um dado número de cartão.
+     * @param numeroCartao
+     * @return
+     */
+    BigDecimal getSaldo(Long numeroCartao) throws Throwable;
 
-    CartaoEntity buscarCartao(Long numeroCartao);
+    CartaoEntity getByNumeroCartao(Long numeroCartao);
 
-    void atualizarSaldo(CartaoEntity cartao, BigDecimal valor);
+    void updateSaldo(CartaoEntity cartao, BigDecimal value);
+
+    /**
+     * Serviço específico para validar os dados informados na requisição para criação de um cartão.
+     * @param request
+     */
+    void validate(CriaCartaoRequestDTO request) throws Throwable;
+
+    /**
+     * Serviço específico para validar um número de cartão.
+     * @param numeroCartao
+     */
+    void validateNumeroCartao(String numeroCartao) throws Throwable;
 }

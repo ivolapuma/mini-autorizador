@@ -25,7 +25,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void post_comCartaoNovo_deveRetornarStatusCreatedECartaoNoBody() {
+    public void post_comCartaoNovo_deveRetornarStatusCreatedECartaoNoBody() throws Throwable {
         CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
         request.setNumeroCartao("1234123412341234");
         request.setSenha("1234");
@@ -41,7 +41,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void post_comCartaoJaExistente_deveRetornarStatusUnprocessableEntityECartaoNoBody() {
+    public void post_comCartaoJaExistente_deveRetornarStatusUnprocessableEntityECartaoNoBody() throws Throwable {
         CriaCartaoRequestDTO request = new CriaCartaoRequestDTO();
         request.setNumeroCartao("1111222233334444");
         request.setSenha("1234");
@@ -57,7 +57,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void getSaldoByNumeroCartao_comCartaoRecemCriado_deveRetornarStatusOKESaldoDefault() {
+    public void getSaldoByNumeroCartao_comCartaoRecemCriado_deveRetornarStatusOKESaldoDefault() throws Throwable {
         CriaCartaoRequestDTO criaCartaoRequest = new CriaCartaoRequestDTO();
         criaCartaoRequest.setNumeroCartao("1234123412341234");
         criaCartaoRequest.setSenha("1234");

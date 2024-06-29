@@ -3,6 +3,8 @@ package ivolapuma.miniautorizador.controller.facade;
 import ivolapuma.miniautorizador.dto.CriaCartaoRequestDTO;
 import ivolapuma.miniautorizador.dto.CriaCartaoResponseDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
+import ivolapuma.miniautorizador.exception.NotFoundEntityException;
+import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
 import ivolapuma.miniautorizador.service.CartaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,23 +20,39 @@ public class CartaoControllerFacadeImpl implements CartaoControllerFacade {
     private CartaoService service;
 
     @Override
-    public ResponseEntity<CriaCartaoResponseDTO> post(CriaCartaoRequestDTO request) {
+    public ResponseEntity<CriaCartaoResponseDTO> post(CriaCartaoRequestDTO request) throws Throwable {
+        service.validate(request);
+        CartaoEntity cartao = buildCartao(request);
+        try {
+            CartaoEntity created = service.create(cartao);
+            return ResponseEntity.status(HttpStatus.CREATED).body(buildResponse(created));
+        } catch (UnprocessableEntityException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(buildResponse(cartao));
+        }
+    }
+
+    private static CriaCartaoResponseDTO buildResponse(CartaoEntity created) {
+        CriaCartaoResponseDTO response = new CriaCartaoResponseDTO();
+        response.setNumeroCartao(String.valueOf(created.getNumeroCartao()));
+        response.setSenha(String.valueOf(created.getSenha()));
+        return response;
+    }
+
+    private static CartaoEntity buildCartao(CriaCartaoRequestDTO request) {
         CartaoEntity cartao = new CartaoEntity();
         cartao.setNumeroCartao(Long.valueOf(request.getNumeroCartao()));
         cartao.setSenha(Integer.valueOf(request.getSenha()));
-
-        CartaoEntity cartaoCriado = service.criarCartao(cartao);
-
-        CriaCartaoResponseDTO response = new CriaCartaoResponseDTO();
-        response.setNumeroCartao(String.valueOf(cartaoCriado.getNumeroCartao()));
-        response.setSenha(String.valueOf(cartaoCriado.getSenha()));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return cartao;
     }
 
     @Override
-    public ResponseEntity<BigDecimal> getSaldoByNumeroCartao(String numeroCartao) {
-        BigDecimal saldo = service.consultarSaldo(Long.valueOf(numeroCartao));
-        return ResponseEntity.status(HttpStatus.OK).body(saldo);
+    public ResponseEntity<BigDecimal> getSaldoByNumeroCartao(String numeroCartao) throws Throwable {
+        service.validateNumeroCartao(numeroCartao);
+        try {
+            BigDecimal saldo = service.getSaldo(Long.valueOf(numeroCartao));
+            return ResponseEntity.status(HttpStatus.OK).body(saldo);
+        } catch (NotFoundEntityException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 }

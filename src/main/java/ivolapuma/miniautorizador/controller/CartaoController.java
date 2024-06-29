@@ -21,14 +21,14 @@ public class CartaoController {
     private CartaoControllerFacade facade;
 
     @PostMapping
-    public ResponseEntity<CriaCartaoResponseDTO> post(@RequestBody CriaCartaoRequestDTO request) {
-        LOGGER.info("Chamado serviço de criação de cartão...");
+    public ResponseEntity<CriaCartaoResponseDTO> post(@RequestBody CriaCartaoRequestDTO request) throws Throwable {
+        LOGGER.info("Chamado serviço de criação de cartão");
         return facade.post(request);
     }
 
     @GetMapping("/{numeroCartao}")
-    public ResponseEntity<BigDecimal> getSaldoByNumeroCartao(@PathVariable String numeroCartao) {
-        LOGGER.info("Chamado serviço de consulta de saldo de cartão...");
+    public ResponseEntity<BigDecimal> getSaldoByNumeroCartao(@PathVariable String numeroCartao) throws Throwable {
+        LOGGER.info("Chamado serviço de consulta de saldo de cartão");
         return facade.getSaldoByNumeroCartao(numeroCartao);
     }
 

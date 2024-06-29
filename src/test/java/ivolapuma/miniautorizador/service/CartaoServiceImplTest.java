@@ -23,7 +23,7 @@ public class CartaoServiceImplTest {
     private CartaoRepository repository;
 
     @Test
-    public void criarCartao_comDtoValido_deveCriarCartaoERetornarDto() {
+    public void criarCartao_comDtoValido_deveCriarCartaoERetornarDto() throws Throwable {
 
         CartaoEntity cartao = new CartaoEntity();
         cartao.setNumeroCartao(1234567890123456L);
@@ -36,7 +36,7 @@ public class CartaoServiceImplTest {
 
         when(repository.save(cartao)).thenReturn(expected);
 
-        CartaoEntity actual = service.criarCartao(cartao);
+        CartaoEntity actual = service.create(cartao);
         Assertions.assertNotNull(actual, "actual nao pode ser nulo");
         Assertions.assertEquals(expected.getNumeroCartao(), actual.getNumeroCartao(), "numeroCartao deve ser igual");
         Assertions.assertEquals(expected.getSenha(), actual.getSenha(), "senha deve ser igual");

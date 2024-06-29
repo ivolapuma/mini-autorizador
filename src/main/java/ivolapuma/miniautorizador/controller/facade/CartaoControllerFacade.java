@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 public interface CartaoControllerFacade {
 
-    ResponseEntity<CriaCartaoResponseDTO> post(CriaCartaoRequestDTO criaCartaoRequestDTO);
+    ResponseEntity<CriaCartaoResponseDTO> post(CriaCartaoRequestDTO criaCartaoRequestDTO) throws Throwable;
 
-    ResponseEntity<BigDecimal> getSaldoByNumeroCartao(String numeroCartao);
+    ResponseEntity<BigDecimal> getSaldoByNumeroCartao(String numeroCartao) throws Throwable;
 }

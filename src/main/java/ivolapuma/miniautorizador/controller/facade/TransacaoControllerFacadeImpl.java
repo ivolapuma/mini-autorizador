@@ -24,8 +24,8 @@ public class TransacaoControllerFacadeImpl implements TransacaoControllerFacade 
         // TODO: atualizar saldo
         Long numeroCartao = Long.valueOf(request.getNumeroCartao());
         BigDecimal valor = request.getValor();
-        CartaoEntity cartao = cartaoService.buscarCartao(numeroCartao);
-        cartaoService.atualizarSaldo(cartao, valor);
+        CartaoEntity cartao = cartaoService.getByNumeroCartao(numeroCartao);
+        cartaoService.updateSaldo(cartao, valor);
         return ResponseEntity.status(HttpStatus.CREATED).body("OK");
     }
 
