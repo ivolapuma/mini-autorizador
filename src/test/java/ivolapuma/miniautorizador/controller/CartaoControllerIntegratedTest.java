@@ -42,8 +42,8 @@ public class CartaoControllerIntegratedTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void cartoesPost_withExistentCartao_shouldReturnStatusUnprocessableEntityAndBody() throws Exception {
         String body = "{ \"numeroCartao\": \"1111222233334444\", \"senha\": \"1234\" }";
         String expectedBody = "{ \"senha\": \"1234\", \"numeroCartao\": \"1111222233334444\" }";
@@ -66,8 +66,8 @@ public class CartaoControllerIntegratedTest {
     }
 
     @Test
-    @Sql(scripts = "/sql/basic-setup-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/sql/basic-setup-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void cartoesGetByNumeroCartao_withNumeroCartao_shouldReturnStatusOKAndSaldo() throws Exception {
         String numeroCartao = "1111222233334444";
         String saldoExpected = "500.00";

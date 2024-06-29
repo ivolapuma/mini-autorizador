@@ -5,6 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface TransacaoControllerFacade {
 
-    ResponseEntity<String> post(ExecuteTransacaoRequestDTO request);
+    ResponseEntity<String> post(ExecuteTransacaoRequestDTO request) throws Throwable;
 
 }

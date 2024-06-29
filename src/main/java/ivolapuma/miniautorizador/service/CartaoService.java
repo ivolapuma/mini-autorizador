@@ -10,6 +10,21 @@ import java.math.BigDecimal;
  */
 public interface CartaoService {
 
+//    /**
+//     * Serviço que verifica se um Numero de Cartão existe no repositório.
+//     * @param numeroCartao
+//     * @return
+//     */
+//    boolean existsByNumeroCartao(Long numeroCartao);
+
+    /**
+     * Serviço ...
+     * @param numeroCartao
+     * @return
+     * @throws Throwable
+     */
+    CartaoEntity getByNumeroCartao(Long numeroCartao) throws Throwable;
+
     /**
      * Serviço que realiza a criação de um Cartão.
      * Para a criaçao do Cartão, o Número do Cartão e Senha devem ser válidos e não podem já existir no repositório.
@@ -26,9 +41,7 @@ public interface CartaoService {
      */
     BigDecimal getSaldo(Long numeroCartao) throws Throwable;
 
-    CartaoEntity getByNumeroCartao(Long numeroCartao);
-
-    void updateSaldo(CartaoEntity cartao, BigDecimal value);
+    void debitSaldo(Long numeroCartao, BigDecimal value) throws Throwable;
 
     /**
      * Serviço específico para validar os dados informados na requisição para criação de um cartão.

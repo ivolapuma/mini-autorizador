@@ -21,7 +21,7 @@ public class TransacaoController {
     private TransacaoControllerFacade facade;
 
     @PostMapping
-    public ResponseEntity<String> post(@RequestBody ExecuteTransacaoRequestDTO request) {
+    public ResponseEntity<String> post(@RequestBody ExecuteTransacaoRequestDTO request) throws Throwable {
         LOGGER.info("Chamado serviço de realização de transação...");
         return facade.post(request);
     }

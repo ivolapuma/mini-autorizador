@@ -6,6 +6,7 @@ import ivolapuma.miniautorizador.exception.NotFoundEntityException;
 import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
 import ivolapuma.miniautorizador.repository.CartaoRepository;
 import ivolapuma.miniautorizador.service.CartaoService;
+import ivolapuma.miniautorizador.service.SaldoService;
 import ivolapuma.miniautorizador.validator.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +32,18 @@ public class CartaoServiceImpl implements CartaoService {
     @Autowired
     private CartaoRepository repository;
 
+    @Autowired
+    private SaldoService saldoService;
+
+//    @Override
+//    public boolean existsByNumeroCartao(Long numeroCartao) {
+//        return repository.existsById(numeroCartao);
+//    }
+
     @Override
-    public CartaoEntity create(CartaoEntity cartao) throws Throwable {
-        verifyNotExists(cartao.getNumeroCartao());
-        cartao.setSaldo(SALDO_DEFAULT);
-        return repository.save(cartao);
+    public CartaoEntity getByNumeroCartao(Long numeroCartao) throws Throwable {
+        verifyExists(numeroCartao);
+        return repository.findById(numeroCartao).get();
     }
 
     private void verifyNotExists(Long numeroCartao) throws Throwable {
@@ -43,13 +51,6 @@ public class CartaoServiceImpl implements CartaoService {
                 .exception(UnprocessableEntityException.class)
                 .message("Cartão já existe na base de dados")
                 .validate();
-    }
-
-    @Override
-    public BigDecimal getSaldo(Long numeroCartao) throws Throwable {
-        verifyExists(numeroCartao);
-        CartaoEntity cartao = getByNumeroCartao(numeroCartao);
-        return cartao.getSaldo();
     }
 
     private void verifyExists(Long numeroCartao) throws Throwable {
@@ -60,15 +61,29 @@ public class CartaoServiceImpl implements CartaoService {
     }
 
     @Override
-    public CartaoEntity getByNumeroCartao(Long numeroCartao) {
-        return repository.findById(numeroCartao).get();
+    public CartaoEntity create(CartaoEntity cartao) throws Throwable {
+        verifyNotExists(cartao.getNumeroCartao());
+        cartao.setSaldo(SALDO_DEFAULT);
+        return repository.save(cartao);
     }
 
     @Override
-    public void updateSaldo(CartaoEntity cartao, BigDecimal value) {
-        LOGGER.info("Atualizando saldo do cartao --> numeroCartao: {} | saldo: {} | valor a debitar: {}", cartao.getNumeroCartao(), cartao.getSaldo(), value);
-        BigDecimal novoSaldo = cartao.getSaldo().subtract(value);
-        cartao.setSaldo(novoSaldo);
+    public BigDecimal getSaldo(Long numeroCartao) throws Throwable {
+        verifyExists(numeroCartao);
+        CartaoEntity cartao = getByNumeroCartao(numeroCartao);
+        return cartao.getSaldo();
+    }
+
+
+
+    @Override
+    public void debitSaldo(Long numeroCartao, BigDecimal value) throws Throwable {
+        CartaoEntity cartao = getByNumeroCartao(numeroCartao);
+        BigDecimal current = cartao.getSaldo();
+        saldoService.verifyIfSufficient(current, value);
+        BigDecimal updated = cartao.getSaldo().subtract(value);
+        cartao.setSaldo(updated);
+        LOGGER.info("Debitando saldo do cartao --> numeroCartao: {} | saldo atual: {} | valor a debitar: {} | novo saldo: {}", cartao.getNumeroCartao(), current, value, updated);
         repository.save(cartao);
     }
 
