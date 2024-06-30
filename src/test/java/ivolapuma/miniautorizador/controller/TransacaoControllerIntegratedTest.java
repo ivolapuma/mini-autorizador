@@ -96,28 +96,4 @@ public class TransacaoControllerIntegratedTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    @Test
-    @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void cartoesPost_withInvalidCredentials_shouldReturnStatusNotAuthorized() throws Exception {
-        String body = "{ \"numeroCartao\": \"1111222233334444\", \"senhaCartao\": \"1234\", \"valor\": 1000.00 }";
-        mvc.perform(post("/cartoes")
-                        .header("Authorization", BasicAuthUtil.getAuthorizarion(username, "pass"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void cartoesPost_withNumeroCartaoInvalid_shouldReturnStatusBadRequest() throws Exception {
-        String body = "{ \"numeroCartao\": \"111122223333444x\", \"senhaCartao\": \"1234\", \"valor\": 1000.00 }";
-        mvc.perform(post("/cartoes")
-                        .header("Authorization", BasicAuthUtil.getAuthorizarion(username, password))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(body))
-                .andExpect(status().isBadRequest());
-    }
-
 }

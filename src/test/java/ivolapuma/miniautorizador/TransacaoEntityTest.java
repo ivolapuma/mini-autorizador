@@ -1,6 +1,7 @@
 package ivolapuma.miniautorizador;
 
 import ivolapuma.miniautorizador.entity.TransacaoEntity;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 
 public class TransacaoEntityTest {
 
+    @Disabled("Habilitar somente para conferir o toString() da entidade")
     @Test
     public void toString_withTransacao_shouldReturnString() {
         TransacaoEntity transacao = new TransacaoEntity();

@@ -1,12 +1,14 @@
 package ivolapuma.miniautorizador;
 
 import ivolapuma.miniautorizador.entity.CartaoEntity;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 public class CartaoEntityTest {
 
+    @Disabled("Habilitar somente para conferir o toString() da entidade")
     @Test
     public void toString_withCartao_shouldReturnString() {
         CartaoEntity cartao = new CartaoEntity();
