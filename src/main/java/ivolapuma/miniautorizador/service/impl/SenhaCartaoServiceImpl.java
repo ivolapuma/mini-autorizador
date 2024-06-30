@@ -34,7 +34,7 @@ public class SenhaCartaoServiceImpl implements SenhaCartaoService {
     public void validate(Integer expected, Integer actual) throws InvalidSenhaCartaoException {
         try {
             TRUE_VALIDATOR.value(expected.equals(actual))
-                    .message("SENHA_INVALIDA")
+                    .message("Senha informada inválida")
                     .validate();
         } catch (ValidatorException e) {
             throw new InvalidSenhaCartaoException(e.getMessage(), e);
