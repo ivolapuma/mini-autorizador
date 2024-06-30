@@ -10,6 +10,7 @@ import ivolapuma.miniautorizador.service.SaldoService;
 import ivolapuma.miniautorizador.service.SenhaCartaoService;
 import ivolapuma.miniautorizador.validator.*;
 import ivolapuma.miniautorizador.validator.exception.ValidatorException;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class CartaoServiceImpl implements CartaoService {
 
     private static final BigDecimal SALDO_DEFAULT = BigDecimal.valueOf(500.0);
 
-    private static final ObjectNotNullValidator OBJECT_NOT_NULL_VALIDATOR = new ObjectNotNullValidator();
+    private static final ObjectNotNullValidator NOT_NULL_VALIDATOR = new ObjectNotNullValidator();
     private static final BooleanValidator FALSE_VALIDATOR = new BooleanValidator(false);
     private static final BooleanValidator TRUE_VALIDATOR = new BooleanValidator(true);;
 
@@ -84,9 +85,10 @@ public class CartaoServiceImpl implements CartaoService {
         return getByNumeroCartao(numeroCartao).getSaldo();
     }
 
+    @Transactional
     @Override
     public void debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException {
-        CartaoEntity cartao = getByNumeroCartao(numeroCartao);
+        CartaoEntity cartao = getByNumeroCartaoWithLock(numeroCartao);
         BigDecimal current = cartao.getSaldo();
         saldoService.verifyIfSufficient(current, value);
         BigDecimal updated = cartao.getSaldo().subtract(value);
@@ -95,10 +97,26 @@ public class CartaoServiceImpl implements CartaoService {
         repository.save(cartao);
     }
 
+    private CartaoEntity getByNumeroCartaoWithLock(Long numeroCartao) throws NotFoundEntityException {
+        CartaoEntity cartao = repository.findByIdWithLock(numeroCartao);
+        verifyIfNotNull(cartao);
+        return cartao;
+    }
+
+    private void verifyIfNotNull(Object obj) throws NotFoundEntityException {
+        try {
+            NOT_NULL_VALIDATOR.value(obj)
+                    .message(messages.getMessage("validator.message.cartaoInexistente", null, null))
+                    .validate();
+        } catch (ValidatorException e) {
+            throw new NotFoundEntityException(e.getMessage(), e);
+        }
+    }
+
     @Override
     public void validate(CreateCartaoRequestDTO request) throws BadRequestException {
         try {
-            OBJECT_NOT_NULL_VALIDATOR.value(request)
+            NOT_NULL_VALIDATOR.value(request)
                     .message(messages.getMessage("validator.message.requisicaoInvalida", null, null))
                     .validate();
             numeroCartaoService.validate(request.getNumeroCartao());

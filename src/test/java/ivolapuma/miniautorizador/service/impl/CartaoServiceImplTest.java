@@ -1,10 +1,12 @@
 package ivolapuma.miniautorizador.service.impl;
 
+import ivolapuma.miniautorizador.builder.GenericBuilder;
 import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.exception.*;
 import ivolapuma.miniautorizador.repository.CartaoRepository;
 import ivolapuma.miniautorizador.service.NumeroCartaoService;
+import ivolapuma.miniautorizador.service.SaldoService;
 import ivolapuma.miniautorizador.service.SenhaCartaoService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,8 @@ import org.springframework.context.MessageSource;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,6 +37,9 @@ public class CartaoServiceImplTest {
 
     @Mock
     private SenhaCartaoService senhaCartaoService;
+
+    @Mock
+    private SaldoService saldoService;
 
     @Mock
     private CartaoRepository repository;
@@ -124,7 +131,7 @@ public class CartaoServiceImplTest {
         CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234567890123456");
         request.setSenha("1234");
-        Assertions.assertDoesNotThrow(
+        assertDoesNotThrow(
                 () -> service.validate(request)
         );
     }
@@ -184,6 +191,59 @@ public class CartaoServiceImplTest {
         BadRequestException e = Assertions.assertThrows(
                 BadRequestException.class,
                 () -> service.validate(request)
+        );
+    }
+
+    @Test
+    public void debitSaldo_withNumeroCartaoAndValor_shouldDebitSaldoCartao() throws InsufficientSaldoException {
+        Long numeroCartao = 1111222233334444L;
+        BigDecimal valor = BigDecimal.valueOf(10.0);
+        CartaoEntity cartao =
+            GenericBuilder.of(CartaoEntity::new)
+                    .with(CartaoEntity::setNumeroCartao, numeroCartao)
+                    .with(CartaoEntity::setSenha, 1111)
+                    .with(CartaoEntity::setSaldo, BigDecimal.valueOf(500.0))
+                    .build();
+        when(repository.findByIdWithLock(numeroCartao)).thenReturn(cartao);
+        doNothing().when(saldoService).verifyIfSufficient(cartao.getSaldo(), valor);
+        when(repository.save(cartao)).thenReturn(cartao);
+        assertDoesNotThrow(
+                () -> service.debitSaldo(numeroCartao, valor)
+        );
+    }
+
+    @Test
+    public void debitSaldo_withCartaoInexistent_shouldThrowException() throws InsufficientSaldoException {
+        Long numeroCartao = 1111222233334444L;
+        BigDecimal valor = BigDecimal.valueOf(10.0);
+        CartaoEntity cartao =
+                GenericBuilder.of(CartaoEntity::new)
+                        .with(CartaoEntity::setNumeroCartao, numeroCartao)
+                        .with(CartaoEntity::setSenha, 1111)
+                        .with(CartaoEntity::setSaldo, BigDecimal.valueOf(500.0))
+                        .build();
+        when(repository.findByIdWithLock(numeroCartao)).thenReturn(null);
+        assertThrows(
+                NotFoundEntityException.class,
+                () -> service.debitSaldo(numeroCartao, valor)
+        );
+    }
+
+    @Test
+    public void debitSaldo_withSaldoInsufficient_shouldThrowException() throws InsufficientSaldoException {
+        Long numeroCartao = 1111222233334444L;
+        BigDecimal valor = BigDecimal.valueOf(1000.0);
+        CartaoEntity cartao =
+                GenericBuilder.of(CartaoEntity::new)
+                        .with(CartaoEntity::setNumeroCartao, numeroCartao)
+                        .with(CartaoEntity::setSenha, 1111)
+                        .with(CartaoEntity::setSaldo, BigDecimal.valueOf(500.0))
+                        .build();
+        when(repository.findByIdWithLock(numeroCartao)).thenReturn(cartao);
+        doThrow(InsufficientSaldoException.class).when(saldoService).verifyIfSufficient(cartao.getSaldo(), valor);
+        assertThrows(
+                InsufficientSaldoException.class,
+                () -> service.debitSaldo(numeroCartao, valor)
         );
     }
 
