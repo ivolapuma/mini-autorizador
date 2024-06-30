@@ -26,7 +26,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void post_withCartao_shouldReturnStatusCreatedAndSavedCartaoInBody() throws Throwable {
+    public void post_withCartao_shouldReturnStatusCreatedAndCartaoSaved() throws Throwable {
         CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234123412341234");
         request.setSenha("1234");
@@ -42,7 +42,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void post_withExistentCartao_shouldReturnStatusUnprocessableEntityAndCartaoInBody() throws Throwable {
+    public void post_withCartaoExistent_shouldReturnStatusUnprocessableEntityAndCartao() throws Throwable {
         CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1111222233334444");
         request.setSenha("1234");
@@ -58,7 +58,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void getSaldoByNumeroCartao_withNewlyCreatedCartao_shouldReturnStatusOKAndSaldoDefault() throws Throwable {
+    public void getSaldoByNumeroCartao_withCartaoNewlyCreated_shouldReturnStatusOKAndSaldoDefault() throws Throwable {
         CreateCartaoRequestDTO criaCartaoRequest = new CreateCartaoRequestDTO();
         criaCartaoRequest.setNumeroCartao("1234123412341234");
         criaCartaoRequest.setSenha("1234");
@@ -78,7 +78,7 @@ public class CartaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void getSaldoByNumeroCartao_withInexistentCartao_shouldReturnStatusNotFoundAndBodyNull() throws Throwable {
+    public void getSaldoByNumeroCartao_withCartaoInexistent_shouldReturnStatusNotFoundAndNull() throws Throwable {
         String numeroCartao = "1234123412341234";
         ResponseEntity<BigDecimal> response = facade.getSaldoByNumeroCartao(numeroCartao);
         Assertions.assertNotNull(response, "response body nao pode ser nulo");

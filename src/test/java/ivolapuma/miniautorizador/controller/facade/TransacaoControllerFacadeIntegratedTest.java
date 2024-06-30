@@ -26,7 +26,7 @@ public class TransacaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void post_withValidTransacao_shouldReturnStatusCreatedAndBodyOK() throws Throwable {
+    public void post_withTransacaoValid_shouldReturnStatusCreatedAndOK() throws Throwable {
         ExecuteTransacaoRequestDTO request = new ExecuteTransacaoRequestDTO();
         request.setNumeroCartao("1111222233334444");
         request.setSenhaCartao("1234");
@@ -39,7 +39,7 @@ public class TransacaoControllerFacadeIntegratedTest {
     @Test
     @Sql(scripts = "/sql/cartao-sem-saldo-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void post_withTransacaoSaldoInsuficiente_shouldReturnStatusUnprocessableEntityAndBodySaldoInsuficiente() throws Throwable {
+    public void post_withTransacaoSaldoInsufficient_shouldReturnStatusUnprocessableEntityAndSaldoInsuficiente() throws Throwable {
         ExecuteTransacaoRequestDTO request = new ExecuteTransacaoRequestDTO();
         request.setNumeroCartao("1111222233334444");
         request.setSenhaCartao("1234");
@@ -47,6 +47,34 @@ public class TransacaoControllerFacadeIntegratedTest {
         ResponseEntity<String> response = facade.post(request);
         assertNotNull(response, "response cannot be null");
         assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatusCode().value(), "statusCode should be equal");
+        assertEquals("SALDO_INSUFICIENTE", response.getBody(), "body should be equal");
     }
 
+    @Test
+    @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void post_withTransacaoSenhaInvalid_shouldReturnStatusStatusUnprocessableEntityAndSenhaInvalida() throws Throwable {
+        ExecuteTransacaoRequestDTO request = new ExecuteTransacaoRequestDTO();
+        request.setNumeroCartao("1111222233334444");
+        request.setSenhaCartao("4321");
+        request.setValor(BigDecimal.valueOf(10.0));
+        ResponseEntity<String> response = facade.post(request);
+        assertNotNull(response, "response cannot be null");
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatusCode().value(), "statusCode should be equal");
+        assertEquals("SENHA_INVALIDA", response.getBody(), "body should be equal");
+    }
+
+    @Test
+    @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    public void post_withTransacaoCartaoInexistent_shouldReturnStatusStatusUnprocessableEntityAndCartaoInexistente() throws Throwable {
+        ExecuteTransacaoRequestDTO request = new ExecuteTransacaoRequestDTO();
+        request.setNumeroCartao("1111222233335555");
+        request.setSenhaCartao("4321");
+        request.setValor(BigDecimal.valueOf(10.0));
+        ResponseEntity<String> response = facade.post(request);
+        assertNotNull(response, "response cannot be null");
+        assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatusCode().value(), "statusCode should be equal");
+        assertEquals("CARTAO_INEXISTENTE", response.getBody(), "body should be equal");
+    }
 }
