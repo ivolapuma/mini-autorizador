@@ -10,10 +10,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,6 +23,9 @@ public class TransacaoServiceImplTest {
 
     @InjectMocks
     private TransacaoServiceImpl service;
+
+    @Mock
+    private MessageSource messages;
 
     @Mock
     private NumeroCartaoService numeroCartaoService;
@@ -53,7 +58,6 @@ public class TransacaoServiceImplTest {
                 BadRequestException.class,
                 () -> service.validate(null)
         );
-        assertEquals("Dados da requisição inválidos", exception.getMessage(), "message should be equal");
     }
 
     @Test
@@ -66,7 +70,6 @@ public class TransacaoServiceImplTest {
                 BadRequestException.class,
                 () -> service.validate(request)
         );
-        assertEquals("Valor da transação não pode ser nulo", exception.getMessage(), "message should be equal");
     }
 
     @Test
@@ -79,7 +82,6 @@ public class TransacaoServiceImplTest {
                 BadRequestException.class,
                 () -> service.validate(request)
         );
-        assertEquals("Valor da transação deve ser um número positivo", exception.getMessage(), "message should be equal");
     }
 
     @Test

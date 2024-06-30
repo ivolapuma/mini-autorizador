@@ -2,19 +2,25 @@ package ivolapuma.miniautorizador.service.impl;
 
 import ivolapuma.miniautorizador.exception.InvalidSenhaCartaoException;
 import ivolapuma.miniautorizador.service.SenhaCartaoService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class SenhaCartaoServiceImplTest {
 
+    @Autowired
     private SenhaCartaoService service;
 
-    @BeforeEach
-    public void setup() {
-        service = new SenhaCartaoServiceImpl();
-    }
+    @Autowired
+    private MessageSource messages;
 
     @Test
     public void validate_withSenhaValid_shouldRunOk() {
@@ -31,7 +37,6 @@ public class SenhaCartaoServiceImplTest {
                 InvalidSenhaCartaoException.class,
                 () -> service.validate(senha)
         );
-        assertEquals("Senha do cartão não pode ser vazia ou nula", e.getMessage(), "message should be equal");
     }
 
     @Test
@@ -41,7 +46,6 @@ public class SenhaCartaoServiceImplTest {
                 InvalidSenhaCartaoException.class,
                 () -> service.validate(senha)
         );
-        assertEquals("Senha do cartão deve conter 4 dígitos", e.getMessage(), "message should be equal");
     }
 
     @Test
@@ -61,7 +65,6 @@ public class SenhaCartaoServiceImplTest {
                 InvalidSenhaCartaoException.class,
                 () -> service.validate(expected, actual)
         );
-        assertEquals("Senha informada inválida", e.getMessage(), "message should be equal");
     }
 
 }

@@ -13,6 +13,7 @@ import ivolapuma.miniautorizador.validator.exception.ValidatorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -26,11 +27,11 @@ public class CartaoServiceImpl implements CartaoService {
     private static final BigDecimal SALDO_DEFAULT = BigDecimal.valueOf(500.0);
 
     private static final ObjectNotNullValidator OBJECT_NOT_NULL_VALIDATOR = new ObjectNotNullValidator();
-    private static final StringNotEmptyValidator STRING_NOT_EMPTY_VALIDATOR = new StringNotEmptyValidator();
-    private static final RegexValidator STRING_WITH_16_DIGITS_VALIDATOR = new RegexValidator("^\\d{16}$");
-    private static final RegexValidator STRING_WITH_4_DIGITS_VALIDATOR = new RegexValidator("^\\d{4}$");
     private static final BooleanValidator FALSE_VALIDATOR = new BooleanValidator(false);
     private static final BooleanValidator TRUE_VALIDATOR = new BooleanValidator(true);;
+
+    @Autowired
+    private MessageSource messages;
 
     @Autowired
     private CartaoRepository repository;
@@ -54,7 +55,7 @@ public class CartaoServiceImpl implements CartaoService {
     private void verifyNotExistsCartao(Long numeroCartao) throws UnprocessableEntityException {
         try {
             FALSE_VALIDATOR.value(repository.existsById(numeroCartao))
-                    .message("Cartão já existe na base de dados")
+                    .message(messages.getMessage("validator.message.cartaoJaExistente", null, null))
                     .validate();
         } catch (ValidatorException e) {
             throw new UnprocessableEntityException(e.getMessage(), e);
@@ -71,7 +72,7 @@ public class CartaoServiceImpl implements CartaoService {
     private void verifyIsPresent(Optional<CartaoEntity> optional) throws NotFoundEntityException {
         try {
             TRUE_VALIDATOR.value(optional.isPresent())
-                    .message("Cartão não existe na base de dados")
+                    .message(messages.getMessage("validator.message.cartaoInexistente", null, null))
                     .validate();
         } catch (ValidatorException e) {
             throw new NotFoundEntityException(e.getMessage(), e);
@@ -98,7 +99,7 @@ public class CartaoServiceImpl implements CartaoService {
     public void validate(CreateCartaoRequestDTO request) throws BadRequestException {
         try {
             OBJECT_NOT_NULL_VALIDATOR.value(request)
-                    .message("Dados da requisição inválidos")
+                    .message(messages.getMessage("validator.message.requisicaoInvalida", null, null))
                     .validate();
             numeroCartaoService.validate(request.getNumeroCartao());
             senhaCartaoService.validate(request.getSenha());

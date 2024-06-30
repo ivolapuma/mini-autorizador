@@ -9,6 +9,7 @@ import ivolapuma.miniautorizador.exception.InvalidSenhaCartaoException;
 import ivolapuma.miniautorizador.exception.NotFoundEntityException;
 import ivolapuma.miniautorizador.service.TransacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class TransacaoControllerFacadeImpl implements TransacaoControllerFacade 
 
     @Autowired
     private TransacaoService service;
+
+    @Autowired
+    private MessageSource messages;
 
     @Override
     public ResponseEntity<String> post(ExecuteTransacaoRequestDTO request) throws BadRequestException {
@@ -31,21 +35,21 @@ public class TransacaoControllerFacadeImpl implements TransacaoControllerFacade 
         try {
             service.execute(transacao);
             status = HttpStatus.CREATED;
-            body = "OK";
+            body = messages.getMessage("response.body.ok", null, null);
             service.log(transacao);
         } catch (InvalidSenhaCartaoException e) {
             status = HttpStatus.UNPROCESSABLE_ENTITY;
-            body = "SENHA_INVALIDA";
+            body = messages.getMessage("response.body.senhaInvalida", null, null);
             transacao.setMotivoFalha(body);
             service.log(transacao);
         } catch (InsufficientSaldoException e) {
             status = HttpStatus.UNPROCESSABLE_ENTITY;
-            body = "SALDO_INSUFICIENTE";
+            body = messages.getMessage("response.body.saldoInsuficiente", null, null);
             transacao.setMotivoFalha(body);
             service.log(transacao);
         } catch (NotFoundEntityException e) {
             status = HttpStatus.UNPROCESSABLE_ENTITY;
-            body = "CARTAO_INEXISTENTE";
+            body = messages.getMessage("response.body.cartaoInexistente", null, null);
             transacao.setMotivoFalha(body);
             service.log(transacao);
         }

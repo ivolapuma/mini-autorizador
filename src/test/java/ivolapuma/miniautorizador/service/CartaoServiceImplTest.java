@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.MessageSource;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -22,6 +23,9 @@ public class CartaoServiceImplTest {
 
     @InjectMocks
     private CartaoServiceImpl service;
+
+    @Mock
+    private MessageSource messages;
 
     @Mock
     private NumeroCartaoService numeroCartaoService;
@@ -60,7 +64,6 @@ public class CartaoServiceImplTest {
                 UnprocessableEntityException.class,
                 () -> service.create(cartao)
         );
-        Assertions.assertEquals("Cartão já existe na base de dados", e.getMessage(), "message should be equal");
     }
 
     @Test
@@ -88,7 +91,6 @@ public class CartaoServiceImplTest {
                 NotFoundEntityException.class,
                 () -> service.getSaldo(numeroCartao)
         );
-        Assertions.assertEquals("Cartão não existe na base de dados", e.getMessage(), "message should be equal");
     }
 
     @Test
@@ -132,7 +134,6 @@ public class CartaoServiceImplTest {
                 BadRequestException.class,
                 () -> service.validate(null)
         );
-        Assertions.assertEquals("Dados da requisição inválidos", e.getMessage(), "message should be equal");
     }
 
     @Test

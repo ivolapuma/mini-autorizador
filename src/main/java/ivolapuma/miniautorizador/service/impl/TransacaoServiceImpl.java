@@ -11,6 +11,7 @@ import ivolapuma.miniautorizador.validator.exception.ValidatorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,9 @@ public class TransacaoServiceImpl implements TransacaoService {
 
     private static final ObjectNotNullValidator OBJECT_NOT_NULL_VALIDATOR = new ObjectNotNullValidator();
     private static final NumberPositiveValidator NUMBER_POSITIVE_VALIDATOR = new NumberPositiveValidator();
+
+    @Autowired
+    private MessageSource messages;
 
     @Autowired
     private CartaoService cartaoService;
@@ -39,13 +43,13 @@ public class TransacaoServiceImpl implements TransacaoService {
     public void validate(ExecuteTransacaoRequestDTO request) throws BadRequestException {
         try {
             OBJECT_NOT_NULL_VALIDATOR.value(request)
-                    .message("Dados da requisição inválidos")
+                    .message(messages.getMessage("validator.message.requisicaoInvalida", null, null))
                     .validate();
             OBJECT_NOT_NULL_VALIDATOR.value(request.getValor())
-                    .message("Valor da transação não pode ser nulo")
+                    .message(messages.getMessage("validator.message.valorTransacaoNulo", null, null))
                     .validate();
             NUMBER_POSITIVE_VALIDATOR.value(request.getValor())
-                    .message("Valor da transação deve ser um número positivo")
+                    .message(messages.getMessage("validator.message.valorTransacaoNaoPositivo", null, null))
                     .validate();
             numeroCartaoService.validate(request.getNumeroCartao());
             senhaCartaoService.validate(request.getSenhaCartao());

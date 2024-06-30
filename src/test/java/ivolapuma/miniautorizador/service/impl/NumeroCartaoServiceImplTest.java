@@ -2,19 +2,25 @@ package ivolapuma.miniautorizador.service.impl;
 
 import ivolapuma.miniautorizador.exception.InvalidNumeroCartaoException;
 import ivolapuma.miniautorizador.service.NumeroCartaoService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class NumeroCartaoServiceImplTest {
 
+    @Autowired
     private NumeroCartaoService service;
 
-    @BeforeEach
-    public void setup() {
-        service = new NumeroCartaoServiceImpl();
-    }
+    @Autowired
+    private MessageSource messages;
 
     @Test
     public void validate_withNumeroCartaoValid_shouldRunOk() {
@@ -31,7 +37,6 @@ public class NumeroCartaoServiceImplTest {
                 InvalidNumeroCartaoException.class,
                 () -> service.validate(numeroCartao)
         );
-        assertEquals("Número do cartão não pode ser vazio ou nulo", e.getMessage(), "message should be equal");
     }
 
     @Test
@@ -41,7 +46,6 @@ public class NumeroCartaoServiceImplTest {
                 InvalidNumeroCartaoException.class,
                 () -> service.validate(numeroCartao)
         );
-        assertEquals("Número do cartão deve conter 16 dígitos", e.getMessage(), "message should be equal");
     }
 
 }

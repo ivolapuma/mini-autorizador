@@ -22,7 +22,7 @@ public class TransacaoController {
 
     @PostMapping
     public ResponseEntity<String> post(@RequestBody ExecuteTransacaoRequestDTO request) throws Throwable {
-        LOGGER.info("Chamado serviço de realização de transação...");
+        LOGGER.info("Chamado serviço de realização de transação");
         return facade.post(request);
     }
 
