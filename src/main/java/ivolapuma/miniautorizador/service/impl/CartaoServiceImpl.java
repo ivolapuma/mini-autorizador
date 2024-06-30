@@ -85,16 +85,28 @@ public class CartaoServiceImpl implements CartaoService {
         return getByNumeroCartao(numeroCartao).getSaldo();
     }
 
+//    @Transactional
+//    @Override
+//    public void debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException {
+//        CartaoEntity cartao = getByNumeroCartaoWithLock(numeroCartao);
+//        BigDecimal current = cartao.getSaldo();
+//        saldoService.verifyIfSufficient(current, value);
+//        BigDecimal updated = cartao.getSaldo().subtract(value);
+//        cartao.setSaldo(updated);
+//        LOGGER.info("Debitando saldo do cartao --> numeroCartao: {} | saldo atual: {} | valor a debitar: {} | novo saldo: {}", cartao.getNumeroCartao(), current, value, updated);
+//        repository.save(cartao);
+//    }
+
     @Transactional
     @Override
-    public void debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException {
+    public CartaoEntity debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException {
         CartaoEntity cartao = getByNumeroCartaoWithLock(numeroCartao);
         BigDecimal current = cartao.getSaldo();
         saldoService.verifyIfSufficient(current, value);
         BigDecimal updated = cartao.getSaldo().subtract(value);
         cartao.setSaldo(updated);
         LOGGER.info("Debitando saldo do cartao --> numeroCartao: {} | saldo atual: {} | valor a debitar: {} | novo saldo: {}", cartao.getNumeroCartao(), current, value, updated);
-        repository.save(cartao);
+        return repository.save(cartao);
     }
 
     private CartaoEntity getByNumeroCartaoWithLock(Long numeroCartao) throws NotFoundEntityException {

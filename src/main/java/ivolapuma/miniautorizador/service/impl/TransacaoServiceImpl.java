@@ -69,7 +69,7 @@ public class TransacaoServiceImpl implements TransacaoService {
         senhaCartaoService.validate(cartao.getSenha(), transacao.getSenhaCartao());
         saldoService.verifyIfSufficient(cartao.getSaldo(), transacao.getValor());
         transacao.setSaldo(cartao.getSaldo());
-        cartaoService.debitSaldo(numeroCartao, transacao.getValor());
+        CartaoEntity debited = cartaoService.debitSaldo(numeroCartao, transacao.getValor());
         transacao.setSucesso(true);
         return transacao;
     }

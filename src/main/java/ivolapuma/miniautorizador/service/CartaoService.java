@@ -49,8 +49,11 @@ public interface CartaoService {
      *
      * @param numeroCartao
      * @param value
+     * @return
+     * @throws NotFoundEntityException
+     * @throws InsufficientSaldoException
      */
-    void debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException;
+    CartaoEntity debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException;
 
     /**
      * Serviço específico para validar os dados informados na requisição para criação de um cartão.

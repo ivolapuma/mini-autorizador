@@ -19,8 +19,7 @@ import org.springframework.context.MessageSource;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -195,9 +194,10 @@ public class CartaoServiceImplTest {
     }
 
     @Test
-    public void debitSaldo_withNumeroCartaoAndValor_shouldDebitSaldoCartao() throws InsufficientSaldoException {
+    public void debitSaldo_withNumeroCartaoAndValor_shouldDebitSaldoCartao() throws InsufficientSaldoException, NotFoundEntityException {
         Long numeroCartao = 1111222233334444L;
         BigDecimal valor = BigDecimal.valueOf(10.0);
+        BigDecimal saldoExpected = BigDecimal.valueOf(500.0).subtract(BigDecimal.valueOf(10.0));
         CartaoEntity cartao =
             GenericBuilder.of(CartaoEntity::new)
                     .with(CartaoEntity::setNumeroCartao, numeroCartao)
@@ -207,9 +207,9 @@ public class CartaoServiceImplTest {
         when(repository.findByIdWithLock(numeroCartao)).thenReturn(cartao);
         doNothing().when(saldoService).verifyIfSufficient(cartao.getSaldo(), valor);
         when(repository.save(cartao)).thenReturn(cartao);
-        assertDoesNotThrow(
-                () -> service.debitSaldo(numeroCartao, valor)
-        );
+        CartaoEntity debited = service.debitSaldo(numeroCartao, valor);
+        assertNotNull(debited, "debited cannot be null");
+        assertEquals(saldoExpected, debited.getSaldo(), "saldo should be equal");
     }
 
     @Test
