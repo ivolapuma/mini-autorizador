@@ -6,6 +6,19 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Classe Builder genérica para criar instâncias de qualquer Classe.
+ *
+ * Exemplo de uso:
+ *
+ * CartaoEntity cartao =
+ *     GenericBuilder.of(CartaoEnity::new)
+ *         .with(CartaoEnity::setNumeroCartao, 1111222233334444L)
+ *         .with(CartaoEnity::setSenha, 1234)
+ *         .build();
+ *
+ * @param <T> Tipo da classe a ser instanciada.
+ */
 public class GenericBuilder<T> {
 
     private final Supplier<T> instantiator;

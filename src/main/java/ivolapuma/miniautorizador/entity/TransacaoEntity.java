@@ -6,6 +6,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Classe que representa a Entidade Transação no modelo de domínio da aplicação.
+ */
 @Entity
 @Table(name = "TRANSACAO")
 public class TransacaoEntity {

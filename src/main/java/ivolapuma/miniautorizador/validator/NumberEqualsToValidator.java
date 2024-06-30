@@ -1,5 +1,8 @@
 package ivolapuma.miniautorizador.validator;
 
+/**
+ * Classe Validator para verificar equivalência de valores numéricos.
+ */
 public class NumberEqualsToValidator extends Validator<Number> {
 
     private final Number other;

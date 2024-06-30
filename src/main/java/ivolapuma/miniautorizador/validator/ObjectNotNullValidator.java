@@ -3,7 +3,7 @@ package ivolapuma.miniautorizador.validator;
 import java.util.Objects;
 
 /**
- * Classe da aplicação que valida se um objeto não é nulo.
+ * Classe Validator para verificar se um objeto não é nulo.
  */
 public class ObjectNotNullValidator extends Validator<Object> {
 

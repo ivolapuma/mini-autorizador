@@ -15,48 +15,50 @@ import java.math.BigDecimal;
 public interface CartaoService {
 
     /**
-     * Serviço ...
-     * @param numeroCartao
-     * @return
-     * @throws Throwable
+     * Serviço específico para validar os dados informados na requisição de criação de um Cartão.
+     *
+     * @param request DTO com os dados da requisição de criação do Cartão.
+     * @throws BadRequestException Lançado quando algum dado está inválido.
      */
-    CartaoEntity getByNumeroCartao(Long numeroCartao) throws NotFoundEntityException;
+    void validate(CreateCartaoRequestDTO request) throws BadRequestException;
 
     /**
      * Serviço que realiza a criação de um Cartão.
-     * Para a criaçao do Cartão, o Número do Cartão e Senha devem ser válidos e não podem já existir no repositório.
-     * O Cartão será criado com saldo inicial igual a 500.00.
-     * @param cartao
-     * @return
+     * O Cartão será criado com saldo inicial definido pelo serviço SaldoService.getSaldoDefault().
+     *
+     * @param cartao Entidade do cartão a ser criado.
+     * @return Entidade do cartão criado.
+     * @throws UnprocessableEntityException Lançado quando o Cartão já existe no repositório.
      */
     CartaoEntity create(CartaoEntity cartao) throws UnprocessableEntityException;
 
     /**
-     * Serviço específco para consultar o saldo de um dado número de cartão.
-     * @param numeroCartao
+     * Serviço de busca de Cartão pelo Número de Cartão.
+     *
+     * @param numeroCartao Número do Cartão a ser localizado.
      * @return
+     * @throws NotFoundEntityException Lançado quando o Cartão não é localizado no repositório.
+     */
+    CartaoEntity getByNumeroCartao(Long numeroCartao) throws NotFoundEntityException;
+
+    /**
+     * Serviço específco para consultar o saldo de um dado Número de Cartão.
+     *
+     * @param numeroCartao Número do Cartão a ter o saldo consultado.
+     * @return
+     * @throws NotFoundEntityException Lançado quando o Cartão não é localizado no repositório.
      */
     BigDecimal getSaldo(Long numeroCartao) throws NotFoundEntityException;
 
     /**
+     * Serviço que realiza o débito de algum valor no saldo do Cartão.
      *
-     * @param numeroCartao
-     * @param value
+     * @param numeroCartao Número do Cartão a ser debitado.
+     * @param value Valor a ser debitado do saldo do Cartão.
      * @return
-     * @throws NotFoundEntityException
-     * @throws InsufficientSaldoException
+     * @throws NotFoundEntityException Lançado quando o Número de Cartão não é localizado no repositório.
+     * @throws InsufficientSaldoException Lançado quando o saldo é insuficiente para o valor informado.
      */
     CartaoEntity debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException;
 
-    /**
-     * Serviço específico para validar os dados informados na requisição para criação de um cartão.
-     * @param request
-     */
-    void validate(CreateCartaoRequestDTO request) throws BadRequestException;
-
-//    /**
-//     * Serviço específico para validar um número de cartão.
-//     * @param numeroCartao
-//     */
-//    void validateNumeroCartao(String numeroCartao);
 }

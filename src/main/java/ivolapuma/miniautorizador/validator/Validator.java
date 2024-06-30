@@ -5,8 +5,8 @@ import ivolapuma.miniautorizador.validator.exception.ValidatorException;
 /**
  * Classe base para todas as subclasses de validação da aplicação.
  *
- * Esta classe implementa o ValidatorStrategy e define um padrão tipo Builder para definir
- * o valor a ser validado e a exceção e mensagem a ser lançado em caso da validação falhar.
+ * Esta classe implementa o ValidatorStrategy e permite o valor a ser validado e uma mensagem a ser enviada
+ * na exceção (do tipo ValidatorException) a ser lançada caso a regra de validação não seja atendida.
  *
  * @param <T> Tipo do valor a ser validado.
  */

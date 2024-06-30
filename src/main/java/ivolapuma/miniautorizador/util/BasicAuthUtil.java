@@ -10,6 +10,7 @@ public final class BasicAuthUtil {
 
     /**
      * Retorna string codificada em Base64 para autorização de requisições Http Basic Auth.
+     *
      * @param username
      * @param password
      * @return

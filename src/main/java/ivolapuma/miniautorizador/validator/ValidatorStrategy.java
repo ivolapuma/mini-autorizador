@@ -3,7 +3,7 @@ package ivolapuma.miniautorizador.validator;
 import ivolapuma.miniautorizador.validator.exception.ValidatorException;
 
 /**
- * Interface baseado no Pattern Strategy para definir a estratégia de validação a ser usada na aplicação.
+ * Interface para definir a estratégia de validação (baseado no Pattern Strategy) a ser usada na aplicação.
  */
 public interface ValidatorStrategy {
 

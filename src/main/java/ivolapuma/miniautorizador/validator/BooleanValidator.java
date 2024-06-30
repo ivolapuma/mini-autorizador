@@ -1,5 +1,8 @@
 package ivolapuma.miniautorizador.validator;
 
+/**
+ * Classe Validator para valores booleanos.
+ */
 public class BooleanValidator extends Validator<Boolean> {
 
     private boolean other;

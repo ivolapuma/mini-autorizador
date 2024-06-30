@@ -7,6 +7,9 @@ import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 
+/**
+ * Classe que representa a Entidade Cartão no modelo de domínio da aplicação.
+ */
 @Entity
 @Table(name = "CARTAO")
 public class CartaoEntity {
