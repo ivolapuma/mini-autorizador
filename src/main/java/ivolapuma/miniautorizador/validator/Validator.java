@@ -1,7 +1,5 @@
 package ivolapuma.miniautorizador.validator;
 
-import ivolapuma.miniautorizador.validator.exception.ValidatorException;
-
 /**
  * Classe base para todas as subclasses de validação da aplicação.
  *

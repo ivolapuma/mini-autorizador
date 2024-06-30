@@ -46,6 +46,17 @@ public class CartaoServiceImpl implements CartaoService {
     private SenhaCartaoService senhaCartaoService;
 
     @Override
+    public void validate(CreateCartaoRequestDTO request) throws BadRequestException {
+        try {
+            NOT_NULL_VALIDATOR.value(request).validate();
+            numeroCartaoService.validate(request.getNumeroCartao());
+            senhaCartaoService.validate(request.getSenha());
+        } catch (ValidatorException | InvalidNumeroCartaoException | InvalidSenhaCartaoException e) {
+            throw new BadRequestException(messages.getMessage("validator.message.requisicaoInvalida", null, null), e);
+        }
+    }
+
+    @Override
     public CartaoEntity create(CartaoEntity cartao) throws UnprocessableEntityException {
         verifyIfNotExistsCartao(cartao.getNumeroCartao());
         cartao.setSaldo(saldoService.getSaldoDefault());
@@ -103,17 +114,6 @@ public class CartaoServiceImpl implements CartaoService {
             NOT_NULL_VALIDATOR.value(obj).validate();
         } catch (ValidatorException e) {
             throw new NotFoundEntityException(messages.getMessage("validator.message.cartaoInexistente", null, null), e);
-        }
-    }
-
-    @Override
-    public void validate(CreateCartaoRequestDTO request) throws BadRequestException {
-        try {
-            NOT_NULL_VALIDATOR.value(request).validate();
-            numeroCartaoService.validate(request.getNumeroCartao());
-            senhaCartaoService.validate(request.getSenha());
-        } catch (ValidatorException | InvalidNumeroCartaoException | InvalidSenhaCartaoException e) {
-            throw new BadRequestException(messages.getMessage("validator.message.requisicaoInvalida", null, null), e);
         }
     }
 
