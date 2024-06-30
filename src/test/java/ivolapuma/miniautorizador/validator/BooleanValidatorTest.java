@@ -2,7 +2,7 @@ package ivolapuma.miniautorizador.validator;
 
 import org.junit.jupiter.api.BeforeEach;
 
-public class BooleanValidatorTest extends AbstractValidatorTest<Boolean, IllegalArgumentException> {
+public class BooleanValidatorTest extends AbstractValidatorTest<Boolean> {
 
     @BeforeEach
     @Override
@@ -10,7 +10,6 @@ public class BooleanValidatorTest extends AbstractValidatorTest<Boolean, Illegal
         this.instance = new BooleanValidator(true);
         this.validValue = true;
         this.invalidValue = false;
-        this.exception = IllegalArgumentException.class;
         this.message = "Boolean value is invalid";
     }
 

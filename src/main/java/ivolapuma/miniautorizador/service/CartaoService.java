@@ -2,6 +2,10 @@ package ivolapuma.miniautorizador.service;
 
 import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
+import ivolapuma.miniautorizador.exception.BadRequestException;
+import ivolapuma.miniautorizador.exception.InsufficientSaldoException;
+import ivolapuma.miniautorizador.exception.NotFoundEntityException;
+import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
 
 import java.math.BigDecimal;
 
@@ -23,7 +27,7 @@ public interface CartaoService {
      * @return
      * @throws Throwable
      */
-    CartaoEntity getByNumeroCartao(Long numeroCartao) throws Throwable;
+    CartaoEntity getByNumeroCartao(Long numeroCartao) throws NotFoundEntityException;
 
     /**
      * Serviço que realiza a criação de um Cartão.
@@ -32,26 +36,31 @@ public interface CartaoService {
      * @param cartao
      * @return
      */
-    CartaoEntity create(CartaoEntity cartao) throws Throwable;
+    CartaoEntity create(CartaoEntity cartao) throws UnprocessableEntityException;
 
     /**
      * Serviço específco para consultar o saldo de um dado número de cartão.
      * @param numeroCartao
      * @return
      */
-    BigDecimal getSaldo(Long numeroCartao) throws Throwable;
+    BigDecimal getSaldo(Long numeroCartao) throws NotFoundEntityException;
 
-    void debitSaldo(Long numeroCartao, BigDecimal value) throws Throwable;
+    /**
+     *
+     * @param numeroCartao
+     * @param value
+     */
+    void debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException;
 
     /**
      * Serviço específico para validar os dados informados na requisição para criação de um cartão.
      * @param request
      */
-    void validate(CreateCartaoRequestDTO request) throws Throwable;
+    void validate(CreateCartaoRequestDTO request) throws BadRequestException;
 
-    /**
-     * Serviço específico para validar um número de cartão.
-     * @param numeroCartao
-     */
-    void validateNumeroCartao(String numeroCartao) throws Throwable;
+//    /**
+//     * Serviço específico para validar um número de cartão.
+//     * @param numeroCartao
+//     */
+//    void validateNumeroCartao(String numeroCartao);
 }

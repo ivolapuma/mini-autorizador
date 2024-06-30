@@ -1,8 +1,10 @@
 package ivolapuma.miniautorizador.service;
 
+import ivolapuma.miniautorizador.exception.InvalidSenhaCartaoException;
+
 public interface SenhaCartaoService {
 
-    void validate(String senhaCartao) throws Throwable;
+    void validate(String senha) throws InvalidSenhaCartaoException;
 
-    void validate(Integer senhaCartao, Integer senhaTransacao) throws Throwable;
+    void validate(Integer expected, Integer actual) throws InvalidSenhaCartaoException;
 }

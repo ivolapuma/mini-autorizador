@@ -2,7 +2,7 @@ package ivolapuma.miniautorizador.validator;
 
 import org.junit.jupiter.api.BeforeEach;
 
-public class ObjectNotNullValidatorTest extends AbstractValidatorTest<Object, IllegalArgumentException> {
+public class ObjectNotNullValidatorTest extends AbstractValidatorTest<Object> {
 
     @BeforeEach
     @Override
@@ -10,7 +10,6 @@ public class ObjectNotNullValidatorTest extends AbstractValidatorTest<Object, Il
         this.instance = new ObjectNotNullValidator();
         this.validValue = new Object();
         this.invalidValue = null;
-        this.exception = IllegalArgumentException.class;
         this.message = "Object should not be null";
     }
 

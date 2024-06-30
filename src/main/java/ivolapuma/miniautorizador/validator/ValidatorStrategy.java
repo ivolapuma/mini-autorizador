@@ -1,5 +1,7 @@
 package ivolapuma.miniautorizador.validator;
 
+import ivolapuma.miniautorizador.validator.exception.ValidatorException;
+
 /**
  * Interface baseado no Pattern Strategy para definir a estratégia de validação a ser usada na aplicação.
  */
@@ -8,11 +10,11 @@ public interface ValidatorStrategy {
     /**
      * Método default para realizar a regra de validação da classe.
      * Lança uma exceção, caso a validação falhe.
-     * @throws Throwable
+     * @throws ValidatorException
      */
-    default void validate() throws Throwable {
+    default void validate() throws ValidatorException {
         if (!isValid()) {
-            throwException();
+            throw new ValidatorException(getExceptionMessage());
         }
     }
 
@@ -23,10 +25,9 @@ public interface ValidatorStrategy {
     boolean isValid();
 
     /**
-     * Método a ser implementado nas subclasses que lança uma exceção que seja esperada em caso
-     * da validação falhar.
-     * @throws Throwable
+     * Retorna a mensagem a ser enviada com a exceção lancada.
+     * @return
      */
-    void throwException() throws Throwable;
+    String getExceptionMessage();
 
 }

@@ -1,6 +1,7 @@
 package ivolapuma.miniautorizador.controller.advice;
 
 import ivolapuma.miniautorizador.dto.ErrorResponseDTO;
+import ivolapuma.miniautorizador.exception.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,8 +12,8 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class ExceptionHandlerControllerAdvice {
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponseDTO> handle(IllegalArgumentException e, WebRequest request) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponseDTO> handle(BadRequestException e, WebRequest request) {
         // TODO: implementar o GenericBuilder
         ErrorResponseDTO response = new ErrorResponseDTO();
         response.setError(e.getClass().getName());
@@ -21,6 +22,7 @@ public class ExceptionHandlerControllerAdvice {
         return ResponseEntity.badRequest().body(response);
     }
 
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponseDTO> handle(Exception e, WebRequest request) {
         // TODO: implementar o GenericBuilder
         ErrorResponseDTO response = new ErrorResponseDTO();

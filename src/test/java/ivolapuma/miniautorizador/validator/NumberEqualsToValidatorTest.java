@@ -2,7 +2,7 @@ package ivolapuma.miniautorizador.validator;
 
 import org.junit.jupiter.api.BeforeEach;
 
-public class NumberEqualsToValidatorTest extends AbstractValidatorTest<Number, IllegalArgumentException> {
+public class NumberEqualsToValidatorTest extends AbstractValidatorTest<Number> {
 
     @BeforeEach
     @Override
@@ -10,7 +10,6 @@ public class NumberEqualsToValidatorTest extends AbstractValidatorTest<Number, I
         this.instance = new NumberEqualsToValidator(10);
         this.validValue = 10;
         this.invalidValue = 11;
-        this.exception = IllegalArgumentException.class;
         this.message = "Number value is invalid";
     }
 

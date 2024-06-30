@@ -2,8 +2,7 @@ package ivolapuma.miniautorizador.service;
 
 import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
-import ivolapuma.miniautorizador.exception.NotFoundEntityException;
-import ivolapuma.miniautorizador.exception.UnprocessableEntityException;
+import ivolapuma.miniautorizador.exception.*;
 import ivolapuma.miniautorizador.repository.CartaoRepository;
 import ivolapuma.miniautorizador.service.impl.CartaoServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -14,10 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CartaoServiceTest {
@@ -26,10 +24,16 @@ public class CartaoServiceTest {
     private CartaoServiceImpl service;
 
     @Mock
+    private NumeroCartaoService numeroCartaoService;
+
+    @Mock
+    private SenhaCartaoService senhaCartaoService;
+
+    @Mock
     private CartaoRepository repository;
 
     @Test
-    public void create_withValidCartao_shouldCreateCartao() throws Throwable {
+    public void create_withCartaoValid_shouldCreateCartao() throws Throwable {
         CartaoEntity cartao = new CartaoEntity();
         cartao.setNumeroCartao(1234567890123456L);
         cartao.setSenha(1234);
@@ -47,7 +51,7 @@ public class CartaoServiceTest {
     }
 
     @Test
-    public void create_withInexistentCartao_shouldThrowUnprocessableEntityException() throws Throwable {
+    public void create_withCartaoInexistent_shouldThrowUnprocessableEntityException() throws Throwable {
         CartaoEntity cartao = new CartaoEntity();
         cartao.setNumeroCartao(1234567890123456L);
         cartao.setSenha(1234);
@@ -60,13 +64,12 @@ public class CartaoServiceTest {
     }
 
     @Test
-    public void getSaldo_withValidNumeroCartao_shouldReturnSaldo() throws Throwable {
+    public void getSaldo_withNumeroCartaoValid_shouldReturnSaldo() throws Throwable {
         long numeroCartao = 1234567890123456L;
         CartaoEntity cartao = new CartaoEntity();
         cartao.setNumeroCartao(numeroCartao);
         cartao.setSenha(1234);
         cartao.setSaldo(BigDecimal.valueOf(500.0));
-        when(repository.existsById(numeroCartao)).thenReturn(true);
         when(repository.findById(numeroCartao)).thenReturn(Optional.of(cartao));
         BigDecimal saldoActual = service.getSaldo(numeroCartao);
         Assertions.assertNotNull(saldoActual, "saldo cant be null");
@@ -74,13 +77,13 @@ public class CartaoServiceTest {
     }
 
     @Test
-    public void getSaldo_withInexistentNumeroCartao_shouldThrowNotFoundEntityException() throws Throwable {
+    public void getSaldo_withNumeroCartaoInexistent_shouldThrowNotFoundEntityException() {
         long numeroCartao = 1234567890123456L;
         CartaoEntity cartao = new CartaoEntity();
         cartao.setNumeroCartao(numeroCartao);
         cartao.setSenha(1234);
         cartao.setSaldo(BigDecimal.valueOf(500.0));
-        when(repository.existsById(numeroCartao)).thenReturn(false);
+        when(repository.findById(numeroCartao)).thenReturn(Optional.ofNullable(null));
         NotFoundEntityException e = Assertions.assertThrows(
                 NotFoundEntityException.class,
                 () -> service.getSaldo(numeroCartao)
@@ -89,7 +92,7 @@ public class CartaoServiceTest {
     }
 
     @Test
-    public void getByNumeroCartao_withValidNumeroCartao_shouldReturnCartao() throws Throwable {
+    public void getByNumeroCartao_withNumeroCartaoValid_shouldReturnCartao() throws NotFoundEntityException {
         long numeroCartao = 1234567890123456L;
         CartaoEntity expected = new CartaoEntity();
         expected.setNumeroCartao(numeroCartao);
@@ -104,109 +107,82 @@ public class CartaoServiceTest {
     }
 
     @Test
-    public void getByNumeroCartao_withInexistentNumeroCartao_shouldThrowNoSuchElementException() throws Throwable {
+    public void getByNumeroCartao_withNumeroCartaoInexistent_shouldThrowNoSuchElementException() {
         Long numeroCartao = 1234567890123456L;
         when(repository.findById(numeroCartao)).thenReturn(Optional.ofNullable(null));
-        NoSuchElementException e = Assertions.assertThrows(
-                NoSuchElementException.class,
+        NotFoundEntityException e = Assertions.assertThrows(
+                NotFoundEntityException.class,
                 () -> service.getByNumeroCartao(numeroCartao)
         );
     }
 
     @Test
-    public void validate_withValidRequest_shouldRunOk() {
+    public void validate_withRequestValid_shouldRunOk() {
         CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234567890123456");
         request.setSenha("1234");
         Assertions.assertDoesNotThrow(
-                ()->service.validate(request)
+                () -> service.validate(request)
         );
     }
 
     @Test
     public void validate_withNull_shouldThrowException() {
-        CreateCartaoRequestDTO request = null;
-        IllegalArgumentException e = Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.validate(request)
+        BadRequestException e = Assertions.assertThrows(
+                BadRequestException.class,
+                () -> service.validate(null)
         );
         Assertions.assertEquals("Dados da requisição inválidos", e.getMessage(), "message should be equal");
     }
 
     @Test
-    public void validate_withNumeroCartaoEmpty_shouldThrowException() {
+    public void validate_withNumeroCartaoEmpty_shouldThrowException() throws InvalidNumeroCartaoException {
         CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("");
         request.setSenha("1234");
-        IllegalArgumentException e = Assertions.assertThrows(
-                IllegalArgumentException.class,
+        doThrow(InvalidNumeroCartaoException.class).when(numeroCartaoService).validate(request.getNumeroCartao());
+        BadRequestException e = Assertions.assertThrows(
+                BadRequestException.class,
                 () -> service.validate(request)
         );
-        Assertions.assertEquals("Número do cartão não pode ser vazio ou nulo", e.getMessage(), "message should be equal");
     }
 
     @Test
-    public void validate_withSenhaEmpty_shouldThrowException() {
+    public void validate_withSenhaEmpty_shouldThrowException() throws InvalidNumeroCartaoException, InvalidSenhaCartaoException {
         CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234567890123456");
         request.setSenha("");
-        IllegalArgumentException e = Assertions.assertThrows(
-                IllegalArgumentException.class,
+        doNothing().when(numeroCartaoService).validate(request.getNumeroCartao());
+        doThrow(InvalidSenhaCartaoException.class).when(senhaCartaoService).validate(request.getSenha());
+        BadRequestException e = Assertions.assertThrows(
+                BadRequestException.class,
                 () -> service.validate(request)
         );
-        Assertions.assertEquals("Senha do cartão não pode ser vazia ou nula", e.getMessage(), "message should be equal");
     }
 
     @Test
-    public void validate_withNumeroCartaoInvalid_shouldThrowException() {
+    public void validate_withNumeroCartaoInvalid_shouldThrowException() throws InvalidNumeroCartaoException {
         CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("x234567890123456");
         request.setSenha("1234");
-        IllegalArgumentException e = Assertions.assertThrows(
-                IllegalArgumentException.class,
+        doThrow(InvalidNumeroCartaoException.class).when(numeroCartaoService).validate(request.getNumeroCartao());
+        BadRequestException e = Assertions.assertThrows(
+                BadRequestException.class,
                 () -> service.validate(request)
         );
-        Assertions.assertEquals("Número do cartão deve conter 16 dígitos", e.getMessage(), "message should be equal");
     }
 
     @Test
-    public void validate_withSenhaInvalid_shouldThrowException() {
+    public void validate_withSenhaInvalid_shouldThrowException() throws InvalidNumeroCartaoException, InvalidSenhaCartaoException {
         CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
         request.setNumeroCartao("1234567890123456");
         request.setSenha("x234");
-        IllegalArgumentException e = Assertions.assertThrows(
-                IllegalArgumentException.class,
+        doNothing().when(numeroCartaoService).validate(request.getNumeroCartao());
+        doThrow(InvalidSenhaCartaoException.class).when(senhaCartaoService).validate(request.getSenha());
+        BadRequestException e = Assertions.assertThrows(
+                BadRequestException.class,
                 () -> service.validate(request)
         );
-        Assertions.assertEquals("Senha do cartão deve conter 4 dígitos", e.getMessage(), "message should be equal");
-    }
-
-    @Test
-    public void validateNumeroCartao_withNumeroCartaoOk_shouldRunOk() {
-        String numeroCartao = "1234567890123456";
-        Assertions.assertDoesNotThrow(
-                () -> service.validateNumeroCartao(numeroCartao)
-        );
-    }
-
-    @Test
-    public void validateNumeroCartao_withNumeroCartaoEmpty_shouldThrowException() {
-        String numeroCartao = "";
-        IllegalArgumentException e = Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.validateNumeroCartao(numeroCartao)
-        );
-        Assertions.assertEquals("Número do cartão não pode ser vazio ou nulo", e.getMessage(), "message should be equal");
-    }
-
-    @Test
-    public void validateNumeroCartao_withNumeroCartaoInvalid_shouldThrowException() {
-        String numeroCartao = "x234567890123456";
-        IllegalArgumentException e = Assertions.assertThrows(
-                IllegalArgumentException.class,
-                () -> service.validateNumeroCartao(numeroCartao)
-        );
-        Assertions.assertEquals("Número do cartão deve conter 16 dígitos", e.getMessage(), "message should be equal");
     }
 
 }

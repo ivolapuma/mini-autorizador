@@ -1,5 +1,7 @@
 package ivolapuma.miniautorizador.validator;
 
+import ivolapuma.miniautorizador.validator.exception.ValidatorException;
+
 /**
  * Classe base para todas as subclasses de validação da aplicação.
  *
@@ -13,7 +15,6 @@ abstract public class Validator<T> implements ValidatorStrategy {
     private static final String MESSAGE_DEFAULT = "Invalid value";
 
     protected T value;
-    private Class<?> exception;
     private String message;
 
     /**
@@ -22,7 +23,6 @@ abstract public class Validator<T> implements ValidatorStrategy {
      */
     public Validator() {
         this.value = null;
-        this.exception = Exception.class;
         this.message = MESSAGE_DEFAULT;
     }
 
@@ -37,30 +37,6 @@ abstract public class Validator<T> implements ValidatorStrategy {
     }
 
     /**
-     * Define o tipo da exceção e a mensagem a serem lançados em caso da validação falhar.
-     * @param type Tipo da exceção a ser lançada
-     * @param message Conteúdo da messagem que será definida na instância da exceção a ser lançada.
-     * @return
-     * @param <E>
-     */
-    public <E extends Exception> Validator<T> exception(Class<E> type, String message) {
-        this.exception = type;
-        this.message = message;
-        return this;
-    }
-
-    /**
-     * Define o tipo da exceção a ser lançada em caso da validação falhar.
-     * @param type Tipo da exceção a ser lançada
-     * @return
-     * @param <E> Tipo que extenda Exception
-     */
-    public <E extends Exception> Validator<T> exception(Class<E> type) {
-        this.exception = type;
-        return this;
-    }
-
-    /**
      * Define a mensagem a ser lançada em caso da validação falhar.
      * @param message
      * @return
@@ -70,14 +46,8 @@ abstract public class Validator<T> implements ValidatorStrategy {
         return this;
     }
 
-    /**
-     * Implementação do método que lança uma exceção que seja esperada em caso
-     * da validação falhar.
-     * @throws Throwable
-     */
     @Override
-    public void throwException() throws Throwable {
-        throw (Throwable) exception.getDeclaredConstructor(String.class).newInstance(message);
+    public String getExceptionMessage() {
+        return this.message;
     }
-
 }

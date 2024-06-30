@@ -2,7 +2,7 @@ package ivolapuma.miniautorizador.validator;
 
 import org.junit.jupiter.api.BeforeEach;
 
-public class StringNotEmptyValidatorTest extends AbstractValidatorTest<String, IllegalArgumentException> {
+public class StringNotEmptyValidatorTest extends AbstractValidatorTest<String> {
 
     @BeforeEach
     @Override
@@ -10,7 +10,6 @@ public class StringNotEmptyValidatorTest extends AbstractValidatorTest<String, I
         this.instance = new StringNotEmptyValidator();
         this.validValue = "some value";
         this.invalidValue = "";
-        this.exception = IllegalArgumentException.class;
         this.message = "String cannot be empty or null";
     }
 
