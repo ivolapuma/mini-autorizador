@@ -13,8 +13,9 @@ public class TransacaoEntityTest {
         TransacaoEntity transacao = new TransacaoEntity();
         transacao.setNumeroCartao(1111222233334444L);
         transacao.setSenhaCartao(1234);
-        transacao.setSaldo(BigDecimal.valueOf(500.0));
         transacao.setValor(BigDecimal.valueOf(10.0));
+        transacao.setSaldoAnterior(BigDecimal.valueOf(500.0));
+        transacao.setSaldoAtual(BigDecimal.valueOf(590.0));
         transacao.setSucesso(true);
         transacao.setTimestamp(LocalDateTime.now());
         System.out.println(transacao);

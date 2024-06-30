@@ -18,8 +18,7 @@ import org.springframework.context.MessageSource;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,7 +131,6 @@ public class TransacaoServiceImplTest {
                         .with(TransacaoEntity::setNumeroCartao, 1111222233334444L)
                         .with(TransacaoEntity::setSenhaCartao, 1234)
                         .with(TransacaoEntity::setValor, BigDecimal.valueOf(10.0))
-                        .with(TransacaoEntity::setSaldo, BigDecimal.valueOf(500.0))
                         .build();
         CartaoEntity cartao =
                 GenericBuilder.of(CartaoEntity::new)
@@ -150,18 +148,20 @@ public class TransacaoServiceImplTest {
         doNothing().when(senhaCartaoService).validate(cartao.getSenha(), transacao.getSenhaCartao());
         doNothing().when(saldoService).verifyIfSufficient(cartao.getSaldo(), transacao.getValor());
         when(cartaoService.debitSaldo(transacao.getNumeroCartao(), transacao.getValor())).thenReturn(debited);
-        assertDoesNotThrow(
-                () -> service.execute(transacao)
-        );
+        TransacaoEntity executed = service.execute(transacao);
+        assertNotNull(executed, "executed transacao cannot be null");
+        assertEquals(transacao.getNumeroCartao(), executed.getNumeroCartao(), "numeroCartao should be equal");
+        assertEquals(transacao.getSenhaCartao(), executed.getSenhaCartao(), "senhaCartao should be equal");
+        assertEquals(transacao.getValor(), executed.getValor(), "valor should be equal");
+        assertEquals(cartao.getSaldo(), executed.getSaldoAnterior(), "saldoAnterior should be equal");
+        assertEquals(debited.getSaldo(), executed.getSaldoAtual(), "saldoAtual should be equal");
+        assertTrue(executed.isSucesso(), "sucesso should be true");
+        assertNull(executed.getMotivoFalha(), "motivoFalha should be null");
+        assertNull(executed.getTimestamp(), "timestamp should be null --> it will be updated when logging");
     }
 
     @Test
     public void execute_withNumeroCartaoInexistent_shouldThrowException() throws InsufficientSaldoException, InvalidSenhaCartaoException, NotFoundEntityException {
-//        TransacaoEntity transacao = new TransacaoEntity();
-//        transacao.setNumeroCartao(1111222233334444L);
-//        transacao.setSenhaCartao(1234);
-//        transacao.setValor(BigDecimal.valueOf(10.0));
-//        transacao.setSaldo(BigDecimal.valueOf(500.0));
         TransacaoEntity transacao =
                 GenericBuilder.of(TransacaoEntity::new)
                         .with(TransacaoEntity::setNumeroCartao, 1111222233334444L)
@@ -177,11 +177,6 @@ public class TransacaoServiceImplTest {
 
     @Test
     public void execute_withSenhaInvalid_shouldThrowException() throws InsufficientSaldoException, InvalidSenhaCartaoException, NotFoundEntityException {
-//        TransacaoEntity transacao = new TransacaoEntity();
-//        transacao.setNumeroCartao(1111222233334444L);
-//        transacao.setSenhaCartao(1234);
-//        transacao.setValor(BigDecimal.valueOf(10.0));
-//        transacao.setSaldo(BigDecimal.valueOf(500.0));
         TransacaoEntity transacao =
                 GenericBuilder.of(TransacaoEntity::new)
                         .with(TransacaoEntity::setNumeroCartao, 1111222233334444L)

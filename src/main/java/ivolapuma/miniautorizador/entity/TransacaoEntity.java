@@ -7,14 +7,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
-@Table(name = "Transacao")
+@Table(name = "TRANSACAO")
 public class TransacaoEntity {
 
     @Id
     @GeneratedValue
     private Long id;
 
-    @Column(name = "numeroCartao", length = 16, nullable = false, updatable = false)
+    @Column(name = "numero_cartao", length = 16, nullable = false, updatable = false)
     private Long numeroCartao;
 
     @Column(name = "senha", length = 4, nullable = false, updatable = false)
@@ -23,13 +23,16 @@ public class TransacaoEntity {
     @Column(name = "valor", scale = 2, nullable = false, updatable = false)
     private BigDecimal valor;
 
-    @Column(name = "saldo", scale = 2, updatable = false)
-    private BigDecimal saldo;
+    @Column(name = "saldo_anterior", scale = 2, updatable = false)
+    private BigDecimal saldoAnterior;
+
+    @Column(name = "saldo_atual", scale = 2, updatable = false)
+    private BigDecimal saldoAtual;
 
     @Column(name = "sucesso", nullable = false, updatable = false)
     private boolean sucesso;
 
-    @Column(name = "motivoFalha", length = 50, updatable = false)
+    @Column(name = "motivo_falha", length = 50, updatable = false)
     private String motivoFalha;
 
     @Column(name = "timestamp", updatable = false)
@@ -62,14 +65,6 @@ public class TransacaoEntity {
         this.senhaCartao = senhaCartao;
     }
 
-    public BigDecimal getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(BigDecimal saldo) {
-        this.saldo = saldo;
-    }
-
     public BigDecimal getValor() {
         return valor;
     }
@@ -78,12 +73,20 @@ public class TransacaoEntity {
         this.valor = valor;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public BigDecimal getSaldoAnterior() {
+        return saldoAnterior;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
+    public void setSaldoAnterior(BigDecimal saldoAnterior) {
+        this.saldoAnterior = saldoAnterior;
+    }
+
+    public BigDecimal getSaldoAtual() {
+        return saldoAtual;
+    }
+
+    public void setSaldoAtual(BigDecimal saldoAtual) {
+        this.saldoAtual = saldoAtual;
     }
 
     public boolean isSucesso() {
@@ -102,15 +105,24 @@ public class TransacaoEntity {
         this.motivoFalha = motivoFalha;
     }
 
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "Transacao: { id:%d, numeroCartao:%d, senhaCartao:%d, saldo:%.2f, valor:%.2f, sucesso:%s, motivoFalha:%s, timestamp:%s }",
+                "Transacao: { id:%d, numeroCartao:%d, senhaCartao:%d, valor:%.2f, saldoAnterior:%.2f, saldoAtual:%.2f, sucesso:%s, motivoFalha:%s, timestamp:%s }",
                 this.id,
                 this.numeroCartao,
                 this.senhaCartao,
-                this.saldo,
                 this.valor,
+                this.saldoAnterior,
+                this.saldoAtual,
                 this.sucesso,
                 this.motivoFalha,
                 this.timestamp.format(DateTimeFormatter.ISO_DATE_TIME)

@@ -8,11 +8,11 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "Cartao")
+@Table(name = "CARTAO")
 public class CartaoEntity {
 
     @Id
-    @Column(name = "numeroCartao", length = 16, nullable = false, updatable = false)
+    @Column(name = "numero_cartao", length = 16, nullable = false, updatable = false)
     private Long numeroCartao;
 
     @Column(name = "senha", length = 4, nullable = false)

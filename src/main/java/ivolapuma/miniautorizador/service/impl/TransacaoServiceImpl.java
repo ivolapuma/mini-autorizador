@@ -67,9 +67,10 @@ public class TransacaoServiceImpl implements TransacaoService {
         Long numeroCartao = transacao.getNumeroCartao();
         CartaoEntity cartao = cartaoService.getByNumeroCartao(numeroCartao);
         senhaCartaoService.validate(cartao.getSenha(), transacao.getSenhaCartao());
+        transacao.setSaldoAnterior(cartao.getSaldo());
         saldoService.verifyIfSufficient(cartao.getSaldo(), transacao.getValor());
-        transacao.setSaldo(cartao.getSaldo());
         CartaoEntity debited = cartaoService.debitSaldo(numeroCartao, transacao.getValor());
+        transacao.setSaldoAtual(debited.getSaldo());
         transacao.setSucesso(true);
         return transacao;
     }
