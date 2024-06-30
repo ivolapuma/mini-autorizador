@@ -1,10 +1,13 @@
-package ivolapuma.miniautorizador.service;
+package ivolapuma.miniautorizador.service.impl;
 
 import ivolapuma.miniautorizador.dto.ExecuteTransacaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.entity.TransacaoEntity;
 import ivolapuma.miniautorizador.exception.*;
-import ivolapuma.miniautorizador.service.impl.TransacaoServiceImpl;
+import ivolapuma.miniautorizador.service.CartaoService;
+import ivolapuma.miniautorizador.service.NumeroCartaoService;
+import ivolapuma.miniautorizador.service.SaldoService;
+import ivolapuma.miniautorizador.service.SenhaCartaoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

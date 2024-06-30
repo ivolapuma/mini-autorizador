@@ -1,5 +1,6 @@
 package ivolapuma.miniautorizador.controller.facade;
 
+import ivolapuma.miniautorizador.builder.GenericBuilder;
 import ivolapuma.miniautorizador.controller.facade.impl.CartaoControllerFacadeImpl;
 import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.dto.CreateCartaoResponseDTO;
@@ -27,9 +28,11 @@ public class CartaoControllerFacadeIntegratedTest {
     @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void post_withCartao_shouldReturnStatusCreatedAndCartaoSaved() throws Throwable {
-        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
-        request.setNumeroCartao("1234123412341234");
-        request.setSenha("1234");
+        CreateCartaoRequestDTO request =
+                GenericBuilder.of(CreateCartaoRequestDTO::new)
+                        .with(CreateCartaoRequestDTO::setNumeroCartao, "1234123412341234")
+                        .with(CreateCartaoRequestDTO::setSenha, "1234")
+                        .build();
         ResponseEntity<CreateCartaoResponseDTO> response = facade.post(request);
         Assertions.assertNotNull(response, "response nao pode ser nulo");
         Assertions.assertEquals(HttpStatus.CREATED.value(), response.getStatusCode().value(), "statusCode deve ser igual");
@@ -43,9 +46,11 @@ public class CartaoControllerFacadeIntegratedTest {
     @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void post_withCartaoExistent_shouldReturnStatusUnprocessableEntityAndCartao() throws Throwable {
-        CreateCartaoRequestDTO request = new CreateCartaoRequestDTO();
-        request.setNumeroCartao("1111222233334444");
-        request.setSenha("1234");
+        CreateCartaoRequestDTO request =
+                GenericBuilder.of(CreateCartaoRequestDTO::new)
+                        .with(CreateCartaoRequestDTO::setNumeroCartao, "1111222233334444")
+                        .with(CreateCartaoRequestDTO::setSenha, "1234")
+                        .build();
         ResponseEntity<CreateCartaoResponseDTO> response = facade.post(request);
         Assertions.assertNotNull(response, "response nao pode ser nulo");
         Assertions.assertEquals(HttpStatus.UNPROCESSABLE_ENTITY.value(), response.getStatusCode().value(), "statusCode deve ser igual");
@@ -59,9 +64,11 @@ public class CartaoControllerFacadeIntegratedTest {
     @Sql(scripts = "/sql/cartao-saldo-default-before.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(scripts = "/sql/todos-casos-after.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     public void getSaldoByNumeroCartao_withCartaoNewlyCreated_shouldReturnStatusOKAndSaldoDefault() throws Throwable {
-        CreateCartaoRequestDTO criaCartaoRequest = new CreateCartaoRequestDTO();
-        criaCartaoRequest.setNumeroCartao("1234123412341234");
-        criaCartaoRequest.setSenha("1234");
+        CreateCartaoRequestDTO criaCartaoRequest =
+                GenericBuilder.of(CreateCartaoRequestDTO::new)
+                        .with(CreateCartaoRequestDTO::setNumeroCartao, "1234123412341234")
+                        .with(CreateCartaoRequestDTO::setSenha, "1234")
+                        .build();
         ResponseEntity<CreateCartaoResponseDTO> criaCartaoResponse = facade.post(criaCartaoRequest);
         Assertions.assertEquals(HttpStatus.CREATED.value(), criaCartaoResponse.getStatusCode().value(), "statusCode deve ser igual");
         String numeroCartao = criaCartaoResponse.getBody().getNumeroCartao();
