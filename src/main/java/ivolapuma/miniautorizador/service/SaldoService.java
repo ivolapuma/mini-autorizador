@@ -6,5 +6,11 @@ import java.math.BigDecimal;
 
 public interface SaldoService {
 
+    /**
+     *
+     * @return
+     */
+    BigDecimal getSaldoDefault();
+
     void verifyIfSufficient(BigDecimal saldo, BigDecimal value) throws InsufficientSaldoException;
 }

@@ -45,14 +45,16 @@ public class CartaoServiceImplTest {
 
     @Test
     public void create_withCartaoValid_shouldCreateCartao() throws Throwable {
+        BigDecimal saldoExpected = BigDecimal.valueOf(1234.56);
         CartaoEntity cartao = new CartaoEntity();
         cartao.setNumeroCartao(1234567890123456L);
         cartao.setSenha(1234);
         CartaoEntity expected = new CartaoEntity();
         cartao.setNumeroCartao(cartao.getNumeroCartao());
         cartao.setSenha(cartao.getSenha());
-        cartao.setSaldo(BigDecimal.valueOf(500.0));
+        cartao.setSaldo(saldoExpected);
         when(repository.existsById(cartao.getNumeroCartao())).thenReturn(false);
+        when(saldoService.getSaldoDefault()).thenReturn(saldoExpected);
         when(repository.save(cartao)).thenReturn(expected);
         CartaoEntity actual = service.create(cartao);
         Assertions.assertNotNull(actual, "actual cant be null");

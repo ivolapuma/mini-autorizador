@@ -23,3 +23,7 @@ logging:
   level:
     root: INFO
     ivolapuma.miniautorizador: DEBUG
+
+miniautorizador:
+  cartao:
+    saldo-default: 500.0

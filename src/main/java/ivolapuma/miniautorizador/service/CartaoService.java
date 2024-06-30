@@ -14,13 +14,6 @@ import java.math.BigDecimal;
  */
 public interface CartaoService {
 
-//    /**
-//     * Serviço que verifica se um Numero de Cartão existe no repositório.
-//     * @param numeroCartao
-//     * @return
-//     */
-//    boolean existsByNumeroCartao(Long numeroCartao);
-
     /**
      * Serviço ...
      * @param numeroCartao

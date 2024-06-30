@@ -37,11 +37,9 @@ public class SenhaCartaoServiceImpl implements SenhaCartaoService {
     @Override
     public void validate(Integer expected, Integer actual) throws InvalidSenhaCartaoException {
         try {
-            TRUE_VALIDATOR.value(expected.equals(actual))
-                    .message(messages.getMessage("validator.message.senhaNaoConfere", null, null))
-                    .validate();
+            TRUE_VALIDATOR.value(expected.equals(actual)).validate();
         } catch (ValidatorException e) {
-            throw new InvalidSenhaCartaoException(e.getMessage(), e);
+            throw new InvalidSenhaCartaoException(messages.getMessage("validator.message.senhaNaoConfere", null, null), e);
         }
     }
 }
