@@ -1,7 +1,6 @@
 version: "3.7"
 
 services:
-
 # Desabilitando configuracao do MongoDB para este projeto...
 #  mongo:
 #    image: mongo:4.2
@@ -15,7 +14,6 @@ services:
 #      MONGO_INITDB_ROOT_PASSWORD: password
 #    volumes:
 #      - ./scripts/init.js:/docker-entrypoint-initdb.d/init.js:ro
-
   mysql:
     image: mysql:5.7
     hostname: mysql

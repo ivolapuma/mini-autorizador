@@ -19,5 +19,3 @@ logging:
   level:
     root: INFO
     ivolapuma.miniautorizador: DEBUG
-
-

@@ -1,148 +1,102 @@
-#Teste de programação - VR Benefícios
+# Resolução do Teste de programação - VR Benefícios
 
-Como parte do processo de seleção, gostaríamos que você desenvolvesse um pequeno sistema, para que possamos ver melhor o seu trabalho.
+Este projeto é uma proposta de resolução ao teste de programação proposto pela VR Benefícios.
 
-Essa solução precisa ser desenvolvida usando Java, mas não necessariamente a versão mais recente. Use o Maven também. Dê preferência ao Spring Boot como framework principal.
+Seguindo as recomendações da proposta, este projeto foi desenvolvido com Java 17, Maven e Spring Boot 3.1.2. O repositório de dados usado foi o MySQL, conforme especificações contidas no arquivo Docker Compose da proposta.
 
-Fique à vontade para criar a partir dos requisitos abaixo. Se algo não ficou claro, pode assumir o que ficar mais claro para você, e, por favor, *documente suas suposições* no README do projeto.
+Conforme a proposta, o projeto disponibiliza 3 endpoints do tipo REST:
+* Método POST, URL http://localhost:8080/cartoes com Body JSON --> Criar um novo Cartão
+* Método GET, URL http://localhost:8080/cartoes/{numeroCartao} --> Consulta saldo do Cartão
+* Método POST, URL http://localhost:8080/transacoes com Body JSON --> Realizar uma Transação de débito no saldo do Cartão
 
-Crie o projeto no seu Github para que possamos ver os passos realizados (por meio dos commits) para a implementação da solução.
+A autenticação nos 3 endpoints é feita no modo BASIC, com usuário e senha definidos conforme especificação. Para alterar os valores de usuário e/ou senha, basta editar as entradas "spring.security.user.name" e "spring.security.user.password" do arquivo application.yml.
 
-Caso sua solução seja aprovada, você será avisado, e a empresa lhe informará os próximos passos.
+## Resolução aos desafios propostos
 
-Se quiser documentar outros detalhes da sua solução (como *design patterns* e boas práticas utilizadas e outras decisões de projeto) pode mandar ver!
-Aliás, documente tudo o que você julgar necessário e interessante. 
+Apesar de opcionais, este projeto buscou resolver os desafios propostos.
 
-Capriche também nos testes automatizados. Esperamos que a cobertura esteja alta. Mas, mais que isso: que os testes testem as classes de fato, e não apenas passem pelo código das classes que estão sendo testadas ;)
+### 1. Construir sem usar *if*
 
-# Mini autorizador
+Buscou-se cumprir esse desafio por meio da implementação de classes de validação, baseadas numa classe abstrata (*Validator*) definindo comportamentos baseados no padrão Strategy. Ver documentação da interface *ValidatorStrategy*.
 
-A VR processa todos os dias diversas transações de Vale Refeição e Vale Alimentação, entre outras.
-De forma breve, as transações saem das maquininhas de cartão e chegam até uma de nossas aplicações, conhecida como *autorizador*, que realiza uma série de verificações e análises. Essas também são conhecidas como *regras de autorização*. 
+Aliás, o único *if* existente no projeto está em um método default da interface *ValidatorStrategy*, pois era uma intenção desta proposta o lançamento de exceções nos casos em que as regras de validação definidas nas classes *Validator* não são atendidas.
 
-Ao final do processo, o autorizador toma uma decisão, aprovando ou não a transação: 
-* se aprovada, o valor da transação é debitado do saldo disponível do benefício, e informamos à maquininha que tudo ocorreu bem. 
-* senão, apenas informamos o que impede a transação de ser feita e o processo se encerra.
+### 2. Como evitar problemas de inconsistência no saldo quando há 2 ou mais transações concorrentes
 
-Sua tarefa será construir um *mini-autorizador*. Este será uma aplicação Spring Boot com interface totalmente REST que permita:
+Para evitar que transações concorrentes possam tornar o status do saldo do cartao inconsistente, o método que realiza o serviço de débito no saldo do Cartão usa uma abordagem de trava pessimista do registro do Cartão na base de dados. De tal forma, quando o serviço de débito de saldo é chamado, o registro do Cartão é travado para leitura e gravações por outros requisitantes, impedindo qualquer alteração de estado durante a execução do método.
 
- * a criação de cartões (todo cartão deverá ser criado com um saldo inicial de R$500,00)
- * a obtenção de saldo do cartão
- * a autorização de transações realizadas usando os cartões previamente criados como meio de pagamento
+Conferir código da classe *CartaoServiceImpl*, no método *debitSaldo()*. Lá está sendo usada a anotação *@Transactional* para definir que o método é executado com controle de transação. A trava pessimista está definida no método *findByIdWithLock()*, na interface *CartaoRepository*. 
 
-## Regras de autorização a serem implementadas
+Não é escopo da proposta, mas outra forma de evitar que o saldo fique inconsistente devido a transações concorrentes poderia ser a definição de uma *trigger* na tabela que lança um erro em caso do saldo ficar negativo.
 
-Uma transação pode ser autorizada se:
-   * o cartão existir
-   * a senha do cartão for a correta
-   * o cartão possuir saldo disponível
+## Observações gerais
 
-Caso uma dessas regras não ser atendida, a transação não será autorizada.
+### 1. Sobre o modelo de domínio
 
-## Demais instruções
+Foram definidas duas entidades:
+* Cartão, para representar um cartão com número, senha e saldo.
+* Transação, para representar uma transação de débito de saldo realizada (com sucesso ou não) no sistema.
 
-O projeto contém um docker-compose.yml com 1 banco de dados relacional e outro não relacional.
-Sinta-se à vontade para utilizar um deles. Se quiser, pode deixar comentado o banco que não for utilizar, mas não altere o que foi declarado para o banco que você selecionou. 
+Apesar de ser opcional, esta proposta faz a persistência dos dados da Transação na base de dados. Além das transações bem sucedidas, estão sendo persistidas as transações com alguma falha devido aos motivos de:
+* Cartão inexistente
+* Senha do cartão inválida
+* Saldo insuficiente para o valor informado
 
-Não é necessário persistir a transação. Mas é necessário persistir o cartão criado e alterar o saldo do cartão caso uma transação ser autorizada pelo sistema.
+### 2. Sobre convenções de código
 
-Serão analisados o estilo e a qualidade do seu código, bem como as técnicas utilizadas para sua escrita.
+Peço licença aqui para empregar a primeira pessoa. Particularmente, eu não tenho posições rígidas sobre formatação de código. Contudo, busquei seguir o "Google Java Style Guide" (https://google.github.io/styleguide/javaguide.html).
 
-Também, na avaliação da sua solução, serão realizados os seguintes testes, nesta ordem:
+Outro ponto em que não tenho posição rígida é com relação à lingua usada no código. Considero importante que haja algum padrão a ser seguido, não importando se tudo deve estar na língua inglesa ou se pode misturar línguas. Evidentemente em projetos internacionais, usar a língua inglesa acaba sendo impositivo devido ao Inglês ser a língua comum nos negócios.
 
- * criação de um cartão
- * verificação do saldo do cartão recém-criado
- * realização de diversas transações, verificando-se o saldo em seguida, até que o sistema retorne informação de saldo insuficiente
- * realização de uma transação com senha inválida
- * realização de uma transação com cartão inexistente
+Entranto, para este projeto, foi buscado escrever o máximo possível na língua inglesa. A exceção ficou para as mensagens a serem exibidas e os termos referentes às entidades e atributos do modelo de domínio do negócio do sistema, tais como Cartão, Transação, Número do Cartão etc.
 
-Esses testes serão realizados:
-* rodando o docker-compose enviado para você
-* rodando a aplicação 
+### 3. Sobre os testes automatizados
 
-Para isso, é importante que os contratos abaixo sejam respeitados:
+Neste projeto, a intenção foi implementar testes automatizados que obtivessem a maior cobertura possível do código sensível.
 
-## Contratos dos serviços
+A abordagem para buscar este objetivo foi implementar testes unitários, principalmente sobre as classes de implementação de serviço, com uso do framework *Mockito* quando necessário. E implementar testes de integração sobre as classes *Controller*, com uso do framework do Spring para Mock de MVC.
 
-### Criar novo cartão
+Há pelo menos um teste de integração definido para cada situação de teste, conforme especificado, a ser verificada na avaliação da resolução.
+
+#### Padrão de nomenclatura das classes de testes
+* testes unitários: *Test.java -->  ex.: NomeClasseAlvoTest.java
+* testes de integração: *IntegratedTest.java --> ex.: NomeClasseAlvoIntegratedTest.java
+
+#### Padrão de nomenclatura dos métodos de testes
+
+Foi definido um padrão para os nomes dos métodos de testes inspirados na técnica *Behavior Driven Development (BDD)* em que cada nome descreve o método da classe-alvo a ser testada, o contexto do teste e o que é esperado como resultado pelo teste.
+
+- DADO um cenário, QUANDO algo acontecer, ENTÃO é esperado o resultado.
+
+O template seguido nos testes automatizados, conforme essa orientação foi o seguinte:
 ```
-Method: POST
-URL: http://localhost:8080/cartoes
-Body (json):
-{
-    "numeroCartao": "6549873025634501",
-    "senha": "1234"
+<nomeDoMetodo>_with<DescricaoCenario>_should<ResultadoEsperado>
+```
+
+Exemplo:
+```
+public class CartaoControllerIntegratedTest {
+    ...
+    public void cartoesPost_withValidBody_shouldReturnStatusCreatedAndBody() {...}
+    ...
 }
-Autenticação: BASIC, com login = username e senha = password
-```
-#### Possíveis respostas:
-```
-Criação com sucesso:
-   Status Code: 201
-   Body (json):
-   {
-      "senha": "1234",
-      "numeroCartao": "6549873025634501"
-   } 
------------------------------------------
-Caso o cartão já exista:
-   Status Code: 422
-   Body (json):
-   {
-      "senha": "1234",
-      "numeroCartao": "6549873025634501"
-   }
------------------------------------------
-Erro de autenticação: 401 
 ```
 
-### Obter saldo do Cartão
+No exemplo acima, é testado o método cartoesPost() da classe CartaoController, o cenário é um Body considerado válido e o resultado esperado é o status CREATED e um Body na resposta.
+
+## Informações adicionais
+
+### Subindo a aplicação
+
+Após subir o banco MySQL (docker compose up), na pasta principal do projeto, digitar na linha de comando:
 ```
-Method: GET
-URL: http://localhost:8080/cartoes/{numeroCartao} , onde {numeroCartao} é o número do cartão que se deseja consultar
-Autenticação: BASIC, com login = username e senha = password
+mvn spring-boot:run
 ```
 
-#### Possíveis respostas:
+### Rodandos os testes
+
+Para rodar todos os testes do projeto, na pasta principal do projeto, digitar na linha de comando:
 ```
-Obtenção com sucesso:
-   Status Code: 200
-   Body: 495.15 
------------------------------------------
-Caso o cartão não exista:
-   Status Code: 404 
-   Sem Body
------------------------------------------
-Erro de autenticação: 401 
+mvn test
 ```
 
-### Realizar uma Transação
-```
-Method: POST
-URL: http://localhost:8080/transacoes
-Body (json):
-{
-    "numeroCartao": "6549873025634501",
-    "senhaCartao": "1234",
-    "valor": 10.00
-}
-Autenticação: BASIC, com login = username e senha = password
-```
-
-#### Possíveis respostas:
-```
-Transação realizada com sucesso:
-   Status Code: 201
-   Body: OK 
------------------------------------------
-Caso alguma regra de autorização tenha barrado a mesma:
-   Status Code: 422 
-   Body: SALDO_INSUFICIENTE|SENHA_INVALIDA|CARTAO_INEXISTENTE (dependendo da regra que impediu a autorização)
------------------------------------------
-Erro de autenticação: 401 
-```
-
-Desafios (não obrigatórios): 
- * é possível construir a solução inteira sem utilizar nenhum if. Só não pode usar *break* e *continue*! Conceitos de orientação a objetos ajudam bastante! 
- * como garantir que 2 transações disparadas ao mesmo tempo não causem problemas relacionados à concorrência?
-Exemplo: dado que um cartão possua R$10.00 de saldo. Se fizermos 2 transações de R$10.00 ao mesmo tempo, em instâncias diferentes da aplicação, como o sistema deverá se comportar?
