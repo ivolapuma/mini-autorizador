@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CartaoServiceTest {
+public class CartaoServiceImplTest {
 
     @InjectMocks
     private CartaoServiceImpl service;

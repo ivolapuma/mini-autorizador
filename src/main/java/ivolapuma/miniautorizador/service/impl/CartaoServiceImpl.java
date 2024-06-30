@@ -44,11 +44,6 @@ public class CartaoServiceImpl implements CartaoService {
     @Autowired
     private SenhaCartaoService senhaCartaoService;
 
-//    @Override
-//    public boolean existsByNumeroCartao(Long numeroCartao) {
-//        return repository.existsById(numeroCartao);
-//    }
-
     @Override
     public CartaoEntity create(CartaoEntity cartao) throws UnprocessableEntityException {
         verifyNotExistsCartao(cartao.getNumeroCartao());
@@ -88,13 +83,6 @@ public class CartaoServiceImpl implements CartaoService {
         return getByNumeroCartao(numeroCartao).getSaldo();
     }
 
-//    private void verifyExists(Long numeroCartao) {
-//        TRUE_VALIDATOR.value(repository.existsById(numeroCartao))
-//                .message("Cartão não existe na base de dados")
-//                .validate();
-//    }
-
-
     @Override
     public void debitSaldo(Long numeroCartao, BigDecimal value) throws NotFoundEntityException, InsufficientSaldoException {
         CartaoEntity cartao = getByNumeroCartao(numeroCartao);
@@ -118,15 +106,5 @@ public class CartaoServiceImpl implements CartaoService {
             throw new BadRequestException(e.getMessage(), e);
         }
     }
-
-//    @Override
-//    public void validateNumeroCartao(String numeroCartao)  {
-//        STRING_NOT_EMPTY_VALIDATOR.value(numeroCartao)
-//                .message("Número do cartão não pode ser vazio ou nulo")
-//                .validate();
-//        STRING_WITH_16_DIGITS_VALIDATOR.value(numeroCartao.trim())
-//                .message("Número do cartão deve conter 16 dígitos")
-//                .validate();
-//    }
 
 }

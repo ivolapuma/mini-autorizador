@@ -41,6 +41,9 @@ public class TransacaoServiceImpl implements TransacaoService {
             OBJECT_NOT_NULL_VALIDATOR.value(request)
                     .message("Dados da requisição inválidos")
                     .validate();
+            OBJECT_NOT_NULL_VALIDATOR.value(request.getValor())
+                    .message("Valor da transação não pode ser nulo")
+                    .validate();
             NUMBER_POSITIVE_VALIDATOR.value(request.getValor())
                     .message("Valor da transação deve ser um número positivo")
                     .validate();
@@ -56,8 +59,8 @@ public class TransacaoServiceImpl implements TransacaoService {
         Long numeroCartao = transacao.getNumeroCartao();
         CartaoEntity cartao = cartaoService.getByNumeroCartao(numeroCartao);
         senhaCartaoService.validate(cartao.getSenha(), transacao.getSenhaCartao());
+        saldoService.verifyIfSufficient(cartao.getSaldo(), transacao.getValor());
         transacao.setSaldo(cartao.getSaldo());
-        saldoService.verifyIfSufficient(transacao.getSaldo(), transacao.getValor());
         cartaoService.debitSaldo(numeroCartao, transacao.getValor());
         transacao.setSucesso(true);
         logTransacao(transacao);
