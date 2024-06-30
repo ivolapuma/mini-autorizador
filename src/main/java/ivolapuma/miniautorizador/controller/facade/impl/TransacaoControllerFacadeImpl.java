@@ -1,5 +1,6 @@
 package ivolapuma.miniautorizador.controller.facade.impl;
 
+import ivolapuma.miniautorizador.builder.GenericBuilder;
 import ivolapuma.miniautorizador.controller.facade.TransacaoControllerFacade;
 import ivolapuma.miniautorizador.dto.ExecuteTransacaoRequestDTO;
 import ivolapuma.miniautorizador.entity.TransacaoEntity;
@@ -26,10 +27,12 @@ public class TransacaoControllerFacadeImpl implements TransacaoControllerFacade 
     @Override
     public ResponseEntity<String> post(ExecuteTransacaoRequestDTO request) throws BadRequestException {
         service.validate(request);
-        TransacaoEntity transacao = new TransacaoEntity();
-        transacao.setNumeroCartao(Long.valueOf(request.getNumeroCartao()));
-        transacao.setSenhaCartao(Integer.valueOf(request.getSenhaCartao()));
-        transacao.setValor(request.getValor());
+        TransacaoEntity transacao =
+            GenericBuilder.of(TransacaoEntity::new)
+                    .with(TransacaoEntity::setNumeroCartao, Long.valueOf(request.getNumeroCartao()))
+                    .with(TransacaoEntity::setSenhaCartao, Integer.valueOf(request.getSenhaCartao()))
+                    .with(TransacaoEntity::setValor, request.getValor())
+                    .build();
         HttpStatus status;
         String body;
         try {

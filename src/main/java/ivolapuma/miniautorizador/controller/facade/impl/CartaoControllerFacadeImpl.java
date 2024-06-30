@@ -1,5 +1,6 @@
 package ivolapuma.miniautorizador.controller.facade.impl;
 
+import ivolapuma.miniautorizador.builder.GenericBuilder;
 import ivolapuma.miniautorizador.controller.facade.CartaoControllerFacade;
 import ivolapuma.miniautorizador.dto.CreateCartaoRequestDTO;
 import ivolapuma.miniautorizador.dto.CreateCartaoResponseDTO;
@@ -39,17 +40,17 @@ public class CartaoControllerFacadeImpl implements CartaoControllerFacade {
     }
 
     private static CreateCartaoResponseDTO buildResponse(CartaoEntity created) {
-        CreateCartaoResponseDTO response = new CreateCartaoResponseDTO();
-        response.setNumeroCartao(String.valueOf(created.getNumeroCartao()));
-        response.setSenha(String.valueOf(created.getSenha()));
-        return response;
+        return GenericBuilder.of(CreateCartaoResponseDTO::new)
+                .with(CreateCartaoResponseDTO::setNumeroCartao, String.valueOf(created.getNumeroCartao()))
+                .with(CreateCartaoResponseDTO::setSenha, String.valueOf(created.getSenha()))
+                .build();
     }
 
     private static CartaoEntity buildCartao(CreateCartaoRequestDTO request) {
-        CartaoEntity cartao = new CartaoEntity();
-        cartao.setNumeroCartao(Long.valueOf(request.getNumeroCartao()));
-        cartao.setSenha(Integer.valueOf(request.getSenha()));
-        return cartao;
+        return GenericBuilder.of(CartaoEntity::new)
+                .with(CartaoEntity::setNumeroCartao, Long.valueOf(request.getNumeroCartao()))
+                .with(CartaoEntity::setSenha, Integer.valueOf(request.getSenha()))
+                .build();
     }
 
     @Override
