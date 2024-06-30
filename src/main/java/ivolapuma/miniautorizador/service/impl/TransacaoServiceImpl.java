@@ -63,14 +63,13 @@ public class TransacaoServiceImpl implements TransacaoService {
         transacao.setSaldo(cartao.getSaldo());
         cartaoService.debitSaldo(numeroCartao, transacao.getValor());
         transacao.setSucesso(true);
-        logTransacao(transacao);
         return transacao;
     }
 
-    private static void logTransacao(TransacaoEntity transacao) {
+    @Override
+    public void log(TransacaoEntity transacao) {
         transacao.setTimestamp(LocalDateTime.now());
         String message = transacao.isSucesso() ? "SUCESSO" : "FALHA";
-        LOGGER.warn("Transação concluída com {}! --> Transacao: {}", message, transacao);
+        LOGGER.warn("Transação concluída com {} --> {}", message, transacao);
     }
-
 }

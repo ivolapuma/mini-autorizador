@@ -48,4 +48,13 @@ public class CartaoEntity {
         this.saldo = saldo;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "Cartao: { numeroCartao:%d, senha:%d, saldo:%.2f }",
+                this.numeroCartao,
+                this.senha,
+                this.saldo
+        );
+    }
 }

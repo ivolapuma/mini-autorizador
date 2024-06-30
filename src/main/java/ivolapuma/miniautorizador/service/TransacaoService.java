@@ -13,4 +13,5 @@ public interface TransacaoService {
 
     TransacaoEntity execute(TransacaoEntity transacao) throws InvalidSenhaCartaoException, InsufficientSaldoException, NotFoundEntityException;
 
+    void log(TransacaoEntity transacao);
 }

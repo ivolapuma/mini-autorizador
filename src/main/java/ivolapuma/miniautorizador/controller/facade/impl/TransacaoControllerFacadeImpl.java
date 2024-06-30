@@ -32,15 +32,22 @@ public class TransacaoControllerFacadeImpl implements TransacaoControllerFacade 
             service.execute(transacao);
             status = HttpStatus.CREATED;
             body = "OK";
+            service.log(transacao);
         } catch (InvalidSenhaCartaoException e) {
             status = HttpStatus.UNPROCESSABLE_ENTITY;
             body = "SENHA_INVALIDA";
+            transacao.setMotivoFalha(body);
+            service.log(transacao);
         } catch (InsufficientSaldoException e) {
             status = HttpStatus.UNPROCESSABLE_ENTITY;
             body = "SALDO_INSUFICIENTE";
+            transacao.setMotivoFalha(body);
+            service.log(transacao);
         } catch (NotFoundEntityException e) {
             status = HttpStatus.UNPROCESSABLE_ENTITY;
             body = "CARTAO_INEXISTENTE";
+            transacao.setMotivoFalha(body);
+            service.log(transacao);
         }
         return ResponseEntity.status(status).body(body);
     }
