@@ -4,6 +4,7 @@ import ivolapuma.miniautorizador.dto.ExecuteTransacaoRequestDTO;
 import ivolapuma.miniautorizador.entity.CartaoEntity;
 import ivolapuma.miniautorizador.entity.TransacaoEntity;
 import ivolapuma.miniautorizador.exception.*;
+import ivolapuma.miniautorizador.repository.TransacaoRepository;
 import ivolapuma.miniautorizador.service.*;
 import ivolapuma.miniautorizador.validator.NumberPositiveValidator;
 import ivolapuma.miniautorizador.validator.ObjectNotNullValidator;
@@ -39,6 +40,9 @@ public class TransacaoServiceImpl implements TransacaoService {
     @Autowired
     private SaldoService saldoService;
 
+    @Autowired
+    private TransacaoRepository repository;
+
     @Override
     public void validate(ExecuteTransacaoRequestDTO request) throws BadRequestException {
         try {
@@ -73,7 +77,8 @@ public class TransacaoServiceImpl implements TransacaoService {
     @Override
     public void log(TransacaoEntity transacao) {
         transacao.setTimestamp(LocalDateTime.now());
-        String message = transacao.isSucesso() ? "SUCESSO" : "FALHA";
-        LOGGER.warn("Transação concluída com {} --> {}", message, transacao);
+        TransacaoEntity saved = repository.save(transacao);
+        String message = saved.isSucesso() ? "SUCESSO" : "FALHA";
+        LOGGER.warn("Transação concluída com {} --> {}", message, saved);
     }
 }

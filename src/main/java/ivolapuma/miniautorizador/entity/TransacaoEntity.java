@@ -1,20 +1,49 @@
 package ivolapuma.miniautorizador.entity;
 
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@Entity
+@Table(name = "Transacao")
 public class TransacaoEntity {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "numeroCartao", length = 16, nullable = false, updatable = false)
     private Long numeroCartao;
+
+    @Column(name = "senha", length = 4, nullable = false, updatable = false)
     private Integer senhaCartao;
-    private BigDecimal saldo;
+
+    @Column(name = "valor", scale = 2, nullable = false, updatable = false)
     private BigDecimal valor;
-    private LocalDateTime timestamp;
+
+    @Column(name = "saldo", scale = 2, updatable = false)
+    private BigDecimal saldo;
+
+    @Column(name = "sucesso", nullable = false, updatable = false)
     private boolean sucesso;
+
+    @Column(name = "motivoFalha", length = 50, updatable = false)
     private String motivoFalha;
 
+    @Column(name = "timestamp", updatable = false)
+    private LocalDateTime timestamp;
+
     public TransacaoEntity() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getNumeroCartao() {
@@ -76,7 +105,8 @@ public class TransacaoEntity {
     @Override
     public String toString() {
         return String.format(
-                "Transacao: { numeroCartao:%d, senhaCartao:%d, saldo:%.2f, valor:%.2f, sucesso:%s, motivoFalha:%s, timestamp:%s }",
+                "Transacao: { id:%d, numeroCartao:%d, senhaCartao:%d, saldo:%.2f, valor:%.2f, sucesso:%s, motivoFalha:%s, timestamp:%s }",
+                this.id,
                 this.numeroCartao,
                 this.senhaCartao,
                 this.saldo,
