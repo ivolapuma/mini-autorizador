@@ -33,6 +33,7 @@ Não é escopo da proposta, mas outra forma de evitar que o saldo fique inconsis
 
 ### 1. Sobre o modelo de domínio
 
+#### 1.1. Entidades
 Foram definidas duas entidades:
 * Cartão, para representar um cartão com número, senha e saldo.
 * Transação, para representar uma transação de débito de saldo realizada (com sucesso ou não) no sistema.
@@ -41,6 +42,18 @@ Apesar de ser opcional, esta proposta faz a persistência dos dados da Transaç�
 * Cartão inexistente
 * Senha do cartão inválida
 * Saldo insuficiente para o valor informado
+
+#### 1.2. Banco de dados
+Foi definida a tabela ***CARTAO*** como repositório da entidade Cartao. Nesta tabela, as informações de Número do Cartão e Senha ficaram representadas, respectivamente, nas colunas ***numero_cartao*** e ***senha***. Os serviços da aplicação esperam que Número do Cartão e Senha sejam informados como tipo texto, contudo, a persistência no repositório destes dados é na forma de inteiro. 
+
+O motivo para esta decisão foi que ao considerar os exemplos descritos na proposta, e ao fazer uma pesquisa superficial sobre o assunto, verificou-se que estes dados são sempre númericos. Logo, não haveria necessidade de armazená-los como uma coluna do tipo *VARCHAR*.   
+
+#### 1.3. Formatação esperada de alguns dados
+Também considerando os exemplos descritos, e após uma breve pesquisa, verificou-se que a informação do Número do Cartão pode conter um número variável de dígitos. Contudo, para esta aplicação, ficou definido que Número do Cartão deve sempre conter 16 números.
+
+De modo semelhante ao Número de Cartão, ficou definido que a Senha deve sempre conter 4 números.
+
+Caso algumas destas informações sejam informadas com formatação diferente, a aplicação devolverá na resposta da requisição o status ***BAD_REQUEST*** e a descrição do motivo no corpo da resposta.
 
 ### 2. Sobre convenções de código
 
