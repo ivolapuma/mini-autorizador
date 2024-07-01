@@ -95,7 +95,7 @@ public class CartaoControllerIntegratedTest {
 }
 ```
 
-No exemplo acima, é testado o método cartoesPost() da classe CartaoController, o cenário é um Body considerado válido e o resultado esperado é o status CREATED e um Body na resposta.
+No exemplo acima, é testado o método *cartoesPost()* da classe *CartaoController*, o cenário é um Body considerado válido e o resultado esperado é o status ***CREATED*** e um Body na resposta.
 
 ## Informações adicionais
 
